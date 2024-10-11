@@ -41,6 +41,10 @@ afterEvaluate {
                 version = '1.0.0'
             }
         }
+
+        repositories {
+            mavenLocal() // 发布到本地仓库
+        }
     }
 }
 
