@@ -3,12 +3,14 @@ package com.github.lnstow.utils
 import android.app.Application
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
+import com.github.lnstow.utils.ext.debug
 import com.github.lnstow.utils.ext.myApp
 
 object LnUtils {
 
-    fun init(app: Application, resId: ResId) {
+    fun init(app: Application, isDebug: Boolean, resId: ResId) {
         myApp = app
+        debug = isDebug
         this.resId = resId
     }
 

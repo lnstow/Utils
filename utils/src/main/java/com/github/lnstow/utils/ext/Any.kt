@@ -18,7 +18,7 @@ fun <T> T.logSt(prefix: String = "") = this.also { Log.d("ln", "log debug $prefi
 inline fun <reified T> Any?.as2(block: T.() -> Unit = { }): T = (this as T).apply(block)
 
 lateinit var myApp: Application
-internal val debug = BuildConfig.DEBUG
+var debug = BuildConfig.DEBUG
 val Int.f get() = this.toFloat()
 val Float.i get() = this.toInt()
 val Long.i get() = this.toInt()
