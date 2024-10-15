@@ -64,16 +64,12 @@ fun ImageView.loadUrl(url: String?) {
 }
 
 @Keep
-class ApiResp<T>(
-    val code: String = "",
-    val message: String = "",
-    val data: T? = null,
-) {
-    val isOk get() = code == "200"
+interface IApiResp<T> {
+    val code: Any
+    val message: String?
+    val data: T?
+    fun isOk(): Boolean
+    fun msgNonNull() = if (message.isNullOrBlank()) "no message" else message
 }
 
-class ApiError(val resp: ApiResp<*>) : Exception(resp.message)
-
-inline fun Exception.matchCode(
-    vararg code: String, block: (resp: ApiResp<*>) -> Unit
-) = if (this is ApiError && resp.code in code) block(this.resp) else Unit
+class ApiError(val resp: IApiResp<*>) : Exception(resp.msgNonNull())
