@@ -5,12 +5,14 @@ import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import com.github.lnstow.utils.ext.debug
 import com.github.lnstow.utils.ext.myApp
+import com.github.lnstow.utils.util.CrashHandler
 
 object LnUtils {
 
     fun init(app: Application, isDebug: Boolean, resId: ResId) {
         myApp = app
         debug = isDebug
+        if (isDebug) Thread.setDefaultUncaughtExceptionHandler(CrashHandler)
         this.resId = resId
     }
 

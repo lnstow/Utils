@@ -20,12 +20,6 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
         initView()
     }
 
-    override fun onStart() {
-        super.onStart()
-        // FIXME: 2024/10/14 调整代码位置
-//        UserShelf.checkUpdate()
-    }
-
     override fun onResumeFragments() {
         super.onResumeFragments()
         CrashHandler.checkCrash()
@@ -43,6 +37,10 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
         else err.defaultCatch()
     }
 
+    open fun onShowToast(toast: String) {
+        showToast(toast)
+    }
+
     companion object {
         private val actList = mutableListOf<BaseAct>()
         val top: Context get() = actList.lastOrNull() ?: myApp
@@ -56,7 +54,7 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
             GlobalScope.launch {
                 BaseVm.toast.collect {
                     topUi {
-                        showToast(it)
+                        onShowToast(it)
                     }
                 }
             }
