@@ -23,7 +23,6 @@ object LnUtils {
         @ColorRes val divider: Int,
         @ColorRes val ft: Int,
         @ColorRes val ftAcc: Int,
-        val container: Int,
         @StringRes val copyTextOk: Int = TODO(),
     )
 }
