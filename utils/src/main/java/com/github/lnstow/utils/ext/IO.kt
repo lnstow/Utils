@@ -1,9 +1,15 @@
 package com.github.lnstow.utils.ext
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.webkit.MimeTypeMap
 import android.widget.ImageView
 import androidx.annotation.Keep
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.github.lnstow.utils.ui.BaseAct
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.File
@@ -73,3 +79,44 @@ interface IApiResp<T> {
 }
 
 class ApiError(val resp: IApiResp<*>) : Exception(resp.msgNonNull())
+
+fun Uri.copyToFile(file: File, context: Context = BaseAct.top) {
+    context.contentResolver.openInputStream(this)?.use { ins ->
+        file.outputStream().use {
+            ins.copyTo(it)
+        }
+    }
+}
+
+fun Uri.loadAsBitmap(context: Context = BaseAct.top): Bitmap? {
+    return context.contentResolver.openInputStream(this)?.use { ins ->
+        BitmapFactory.decodeStream(ins, null,
+            BitmapFactory.Options().apply {
+//                inSampleSize = 2
+                inPreferredConfig = Bitmap.Config.RGB_565
+            }
+        )
+    }
+}
+
+fun Uri.getMimeType(context: Context = BaseAct.top): String? {
+    return context.contentResolver.getType(this)
+}
+
+fun Uri.getFileExt(context: Context = BaseAct.top): String? {
+    return MimeTypeMap.getSingleton().getExtensionFromMimeType(getMimeType(context))
+}
+
+fun Bitmap.compressToFile(file: File) {
+    if (file.name.endsWith("jpg")) {
+        file.outputStream().use {
+            compress(Bitmap.CompressFormat.JPEG, 50, it)
+        }
+    } else if (file.name.endsWith("png")) {
+        file.outputStream().use {
+            compress(Bitmap.CompressFormat.PNG, 50, it)
+        }
+    } else {
+        BaseAct.topUi { showToast("unsupported file type") }
+    }
+}
