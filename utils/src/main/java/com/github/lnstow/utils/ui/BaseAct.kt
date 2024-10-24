@@ -7,10 +7,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.github.lnstow.utils.ext.ApiError
+import com.github.lnstow.utils.ext.addWindowInsetsPadding
 import com.github.lnstow.utils.ext.defaultCatch
+import com.github.lnstow.utils.ext.lightBars
 import com.github.lnstow.utils.ext.myApp
 import com.github.lnstow.utils.ext.showDialog
 import com.github.lnstow.utils.ext.showToast
+import com.github.lnstow.utils.ext.wi
 import com.github.lnstow.utils.util.CrashHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -83,6 +86,10 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
 
     class ActBehavior(
         val enableEdgeToEdge: Boolean,
-        val setEdgeToEdge: (BaseAct) -> Unit = { it.enableEdgeToEdge() },
+        val setEdgeToEdge: (BaseAct) -> Unit = {
+            it.enableEdgeToEdge()
+            it.window.wi.lightBars()
+            it.window.decorView.addWindowInsetsPadding()
+        },
     )
 }
