@@ -7,7 +7,6 @@ import androidx.annotation.ColorRes
 import androidx.annotation.FloatRange
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.graphics.ColorUtils
-import androidx.core.view.WindowInsetsControllerCompat
 import kotlin.math.roundToInt
 
 fun @receiver:ColorInt Int.alpha(@FloatRange(from = 0.0, to = 1.0) alpha: Float): Int =
@@ -61,16 +60,19 @@ private fun checkTransparent(@ColorInt color: Int) {
     }
 }
 
+@Deprecated("Android 15 之后废弃的属性", ReplaceWith("ComponentActivity.enableEdgeToEdge()"))
 fun setStatusBarColor(@ColorRes colorId: Int, window: Window?) {
     setStatusBarColorCode(getColorById(window?.context ?: return, colorId), window)
 }
 
+@Deprecated("Android 15 之后废弃的属性", ReplaceWith("ComponentActivity.enableEdgeToEdge()"))
 fun setStatusBarColorCode(@ColorInt color: Int, window: Window?) {
     window ?: return
     window.statusBarColor = color
     window.navigationBarColor = color
-    WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
-        runCatching { window.statusBarColor.isLight }.getOrDefault(
+    window.wi.lightBars(
+        isLight = runCatching { window.statusBarColor.isLight }.getOrDefault(
             AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES
         )
+    )
 }

@@ -65,6 +65,7 @@ object IntentUtils {
         startIntentForResult(createAlbumIntent(), REQUEST_OPEN_ALBUM, frag, context)
     }
 
+    //    https://github.com/wildma/PictureSelector/blob/master/pictureselector/src/main/java/com/wildma/pictureselector/PictureSelectUtils.java
     //    https://medium.com/@appgeniuz08/capture-photo-via-intent-in-android-66749be91b9d
     //    https://developer.android.com/media/camera/camera-deprecated/photobasics?hl=en
     fun openCamera(fileTarget: File, frag: Fragment? = null, context: Context = BaseAct.top): Uri {

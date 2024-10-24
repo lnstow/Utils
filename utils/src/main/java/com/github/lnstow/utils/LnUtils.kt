@@ -5,15 +5,23 @@ import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import com.github.lnstow.utils.ext.debug
 import com.github.lnstow.utils.ext.myApp
+import com.github.lnstow.utils.ui.BaseAct
+import com.github.lnstow.utils.ui.BaseAct.Companion.actBehavior
 import com.github.lnstow.utils.util.CrashHandler
 
 object LnUtils {
 
-    fun init(app: Application, isDebug: Boolean, resId: ResId) {
+    fun init(
+        app: Application,
+        isDebug: Boolean,
+        resId: ResId,
+        behavior: BaseAct.ActBehavior
+    ) {
         myApp = app
         debug = isDebug
         if (isDebug) Thread.setDefaultUncaughtExceptionHandler(CrashHandler)
         this.resId = resId
+        actBehavior = behavior
     }
 
     lateinit var resId: ResId

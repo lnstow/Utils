@@ -1,7 +1,9 @@
 package com.github.lnstow.utils.ui
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.github.lnstow.utils.ext.ApiError
@@ -16,6 +18,11 @@ import kotlinx.coroutines.launch
 abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutId) {
     override fun onCreate(savedInstanceState: Bundle?) {
         actList.add(this)
+        if (actBehavior.enableEdgeToEdge) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                window.isNavigationBarContrastEnforced = false
+            setEdgeToEdge()
+        }
         super.onCreate(savedInstanceState)
         initView()
     }
@@ -39,6 +46,10 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
 
     open fun onShowToast(toast: String) {
         showToast(toast)
+    }
+
+    open fun setEdgeToEdge() {
+        actBehavior.setEdgeToEdge(this)
     }
 
     companion object {
@@ -66,5 +77,12 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
                 }
             }
         }
+
+        lateinit var actBehavior: ActBehavior
     }
+
+    class ActBehavior(
+        val enableEdgeToEdge: Boolean,
+        val setEdgeToEdge: (BaseAct) -> Unit = { it.enableEdgeToEdge() },
+    )
 }
