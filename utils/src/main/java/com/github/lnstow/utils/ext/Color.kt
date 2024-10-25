@@ -1,12 +1,15 @@
 package com.github.lnstow.utils.ext
 
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.Window
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.FloatRange
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.graphics.ColorUtils
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import kotlin.math.roundToInt
 
 fun @receiver:ColorInt Int.alpha(@FloatRange(from = 0.0, to = 1.0) alpha: Float): Int =
@@ -75,4 +78,9 @@ fun setStatusBarColorCode(@ColorInt color: Int, window: Window?) {
             AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES
         )
     )
+}
+
+fun Fragment.windowBgColor(@ColorRes id: Int) = requireActivity().windowBgColor(id)
+fun FragmentActivity.windowBgColor(@ColorRes id: Int) {
+    window.setBackgroundDrawable(ColorDrawable(getColorById(id)))
 }
