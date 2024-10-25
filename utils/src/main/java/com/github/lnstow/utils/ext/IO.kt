@@ -60,6 +60,15 @@ fun File.createDir(): File {
 
 infix fun File.writeJson(dataObj: Any) = createFile().writeText(dataObj.toJson())
 
+fun File.getSize(): Long {
+    return try {
+        walkTopDown().sumOf { if (it.isFile) it.length() else 0 }
+//        listFiles()?.sumOf { it.getSize() } ?: length()
+    } catch (e: Exception) {
+        0
+    }
+}
+
 fun ImageView.loadUrl(url: String?) {
     Glide.with(context.activity()!!)
         .load(url)
