@@ -30,7 +30,8 @@ abstract class FragWrapperActivity : BaseAct(), HasFragContainer {
         FragmentContainerView(this).apply {
             id = containerId
             setContentView(this)
-            add(initFrag())
+            if (getFragManager().fragments.isEmpty())
+                add(initFrag())
         }
     }
 
