@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.github.lnstow.utils.ext.DSP_IO
+import com.github.lnstow.utils.ext.LaunchParams
+import com.github.lnstow.utils.ext.ToastInfo
 import com.github.lnstow.utils.ext.valueNN
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
@@ -52,9 +54,12 @@ abstract class BaseVm : ViewModel(), StateHolder {
         }
     }
 
-    companion object : StateHolder {
-        val toast = asEventFlowMultiPage<String>(onlyLastEvent = true)
+    companion object : StateHolder, PageEvent {
+        val toast = asEventFlowMultiPage<ToastInfo>(onlyLastEvent = true)
         val err = asEventFlowMultiPage<Throwable>(onlyLastEvent = false)
+        override val peBackPressed: SharedFlow<Unit> = asEventFlow()
+        override val peNavigate: SharedFlow<LaunchParams> = asEventFlow()
+        override val peFinish: SharedFlow<Unit> = asEventFlow()
     }
 }
 

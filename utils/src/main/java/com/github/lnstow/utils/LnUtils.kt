@@ -6,25 +6,27 @@ import androidx.annotation.StringRes
 import com.github.lnstow.utils.ext.debug
 import com.github.lnstow.utils.ext.myApp
 import com.github.lnstow.utils.ui.BaseAct
-import com.github.lnstow.utils.ui.BaseAct.Companion.actBehavior
+import com.github.lnstow.utils.ui.NavigateManager
 import com.github.lnstow.utils.util.CrashHandler
 
 object LnUtils {
+    lateinit var nav: NavigateManager
+    lateinit var resId: ResId
 
     fun init(
         app: Application,
         isDebug: Boolean,
         resId: ResId,
-        behavior: BaseAct.ActBehavior
+        behavior: BaseAct.ActBehavior,
+        nav: NavigateManager,
     ) {
         myApp = app
         debug = isDebug
         if (isDebug) Thread.setDefaultUncaughtExceptionHandler(CrashHandler)
         this.resId = resId
-        actBehavior = behavior
+        BaseAct.actBehavior = behavior
+        this.nav = nav
     }
-
-    lateinit var resId: ResId
 
     class ResId(
         @ColorRes val main: Int,

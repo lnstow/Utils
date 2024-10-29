@@ -1,5 +1,6 @@
 package com.github.lnstow.utils.ext
 
+import android.content.Context
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.postDelayed
 import androidx.fragment.app.Fragment
@@ -61,7 +62,7 @@ inline fun FragmentActivity.backPress(
     return callback
 }
 
-fun Fragment.onBackPressed() = requireActivity().onBackPressed()
+fun Fragment.onBackPressed() = requireActivity().onBackPressedDispatcher.onBackPressed()
 fun Fragment.finish() =
     if (parentFragmentManager.backStackEntryCount == 0) onBackPressed()
     else parentFragmentManager.popBackStack()
@@ -73,4 +74,12 @@ fun FragmentActivity.doubleBackToExit(toastStrId: Int, timeout: Long = 2000) {
         showToast(getString(toastStrId))
         window.decorView.postDelayed(timeout) { exit = false }
     }
+}
+
+interface AccessCtx {
+    fun ctx(): Context
+}
+
+interface AccessAct {
+    fun act(): FragmentActivity
 }
