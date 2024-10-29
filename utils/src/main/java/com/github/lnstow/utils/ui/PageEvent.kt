@@ -8,6 +8,7 @@ import com.github.lnstow.utils.ext.LaunchParams
 import com.github.lnstow.utils.ext.collectEvent
 import com.github.lnstow.utils.ext.finish
 import com.github.lnstow.utils.ext.log
+import com.github.lnstow.utils.ext.onBackPressed2
 import com.github.lnstow.utils.ext.showToast
 import kotlinx.coroutines.flow.SharedFlow
 
@@ -70,7 +71,7 @@ class ActivityPageEventHandler(private val act: FragmentActivity) : PageEventHan
     }
 
     override fun peBackPressed(u: Unit) {
-        act.onBackPressedDispatcher.onBackPressed()
+        act.onBackPressed2()
     }
 
     override fun peNavigate(lp: LaunchParams, startFrag: (Fragment) -> Unit) {

@@ -67,6 +67,7 @@ fun Fragment.finish() =
     if (parentFragmentManager.backStackEntryCount == 0) onBackPressed()
     else parentFragmentManager.popBackStack()
 
+fun FragmentActivity.onBackPressed2() = onBackPressedDispatcher.onBackPressed()
 fun FragmentActivity.doubleBackToExit(toastStrId: Int, timeout: Long = 2000) {
     var exit = false
     backPress(enable = { !exit }) {

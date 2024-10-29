@@ -2,7 +2,10 @@ package com.github.lnstow.utils
 
 import android.app.Application
 import androidx.annotation.ColorRes
+import androidx.annotation.DimenRes
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.github.lnstow.utils.ext.Dp
 import com.github.lnstow.utils.ext.debug
 import com.github.lnstow.utils.ext.myApp
 import com.github.lnstow.utils.ui.BaseAct
@@ -10,8 +13,9 @@ import com.github.lnstow.utils.ui.NavigateManager
 import com.github.lnstow.utils.util.CrashHandler
 
 object LnUtils {
-    lateinit var nav: NavigateManager
     lateinit var resId: ResId
+    lateinit var nav: NavigateManager
+    lateinit var tbConfig: TbConfig
 
     fun init(
         app: Application,
@@ -19,6 +23,7 @@ object LnUtils {
         resId: ResId,
         behavior: BaseAct.ActBehavior,
         nav: NavigateManager,
+        tbConfig: TbConfig,
     ) {
         myApp = app
         debug = isDebug
@@ -26,6 +31,7 @@ object LnUtils {
         this.resId = resId
         BaseAct.actBehavior = behavior
         this.nav = nav
+        this.tbConfig = tbConfig
     }
 
     class ResId(
@@ -34,5 +40,14 @@ object LnUtils {
         @ColorRes val ft: Int,
         @ColorRes val ftAcc: Int,
         @StringRes val copyTextOk: Int = TODO(),
+    )
+
+    class TbConfig(
+        @ColorRes val text: Int,
+        @ColorRes val title: Int,
+        @DimenRes val textSize: Int,
+        @DimenRes val titleSize: Int,
+        @DrawableRes val backIcon: Int,
+        @Dp val heightDp: Int
     )
 }
