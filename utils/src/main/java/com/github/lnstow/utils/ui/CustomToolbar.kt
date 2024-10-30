@@ -109,7 +109,10 @@ abstract class CustomToolbar(
 }
 
 /** 带有返回箭头的toolbar，父类提供onLayout2给子类实现布局 */
-abstract class BackArrowTb(context: Context) : CustomToolbar(context) {
+abstract class BackArrowTb(
+    context: Context,
+    @Dp heightDp: Int = LnUtils.tbConfig.heightDp
+) : CustomToolbar(context, heightDp) {
     private val backArrow = VectorDrawableCompat.create(
         context.resources, LnUtils.tbConfig.backIcon, context.theme
     )

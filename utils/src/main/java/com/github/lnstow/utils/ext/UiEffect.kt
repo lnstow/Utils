@@ -62,7 +62,7 @@ interface ToastInfo {
     fun showToast(ctx: AccessCtx = BaseAct.top as BaseAct)
 }
 
-class ToastDef(
+class ToastDef private constructor(
     private val msg: String? = null,
     @StringRes private val msgId: Int = 0,
     private val showShort: Boolean = true,
@@ -72,7 +72,6 @@ class ToastDef(
 
     override fun showToast(ctx: AccessCtx) {
         val c = ctx.ctx()
-        if (msg == null) c.showToast(c.getString(msgId), showShort)
-        else c.showToast(msg, showShort)
+        c.showToast(msg ?: c.getString(msgId), showShort)
     }
 }
