@@ -18,6 +18,7 @@ abstract class BaseFrag(@LayoutRes layoutId: Int = 0) : Fragment(layoutId),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+//        view.isClickable = true // 让最上层fragment拦截点击事件
         initView()
     }
 

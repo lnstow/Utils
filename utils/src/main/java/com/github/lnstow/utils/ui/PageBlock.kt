@@ -64,8 +64,8 @@ abstract class PageBlockFragment : BaseFrag() {
 abstract class ViewBindingFragment(@LayoutRes private val layoutId: Int) : BaseFrag(layoutId) {
     protected abstract val vb: ViewBinding
 
-    protected fun <T : ViewBinding> viewBindingTb(
-        vbFactory: (View) -> T, placeholder: Unit = Unit,
+    protected inline fun <T : ViewBinding> viewBindingTb(
+        crossinline vbFactory: (View) -> T, placeholder: Unit = Unit,
     ) = viewBinding<Fragment, T>(viewBinder = {
         vbFactory((it.requireView() as ViewGroup).getChildAt(1))
     })

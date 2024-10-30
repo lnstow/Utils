@@ -44,14 +44,16 @@ fun FragmentManager.addFragWithAnimInOut(
     frag: Fragment,
     containerId: Int,
     isAddStack: Boolean = true,
-    @AnimatorRes @AnimRes enter: Int = R.anim.frag_slide_in_right_anim,
-    @AnimatorRes @AnimRes exit: Int = R.anim.frag_slide_out_right_anim,
-    @AnimatorRes @AnimRes popEnter: Int = enter,
-    @AnimatorRes @AnimRes popExit: Int = exit,
+    @AnimatorRes @AnimRes topEnter: Int = R.anim.frag_slide_in_right,
+    @AnimatorRes @AnimRes bottomExit: Int = R.anim.frag_fade_out,
+    @AnimatorRes @AnimRes bottomEnter: Int = R.anim.frag_fade_in,
+    @AnimatorRes @AnimRes topExit: Int = R.anim.frag_slide_out_right,
 ) {
     val tr = beginTransaction()
-    tr.setCustomAnimations(enter, exit, popEnter, popExit)
+    val f = fragments.lastOrNull()
+    tr.setCustomAnimations(topEnter, bottomExit, bottomEnter, topExit)
     tr.add(containerId, frag, frag.hashCode().toString())
-    if (isAddStack && fragments.isNotEmpty()) tr.addToBackStack(null)
+    if (f != null) tr.hide(f)
+    if (isAddStack && f != null) tr.addToBackStack(null)
     tr.commitAllowingStateLoss()
 }
