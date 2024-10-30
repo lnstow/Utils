@@ -1,6 +1,7 @@
 package com.github.lnstow.utils.ui
 
 import android.os.Bundle
+import android.view.View
 import androidx.annotation.AnimRes
 import androidx.annotation.AnimatorRes
 import androidx.fragment.app.Fragment
@@ -26,8 +27,8 @@ abstract class FragWrapperActivity : BaseAct(), HasFragContainer {
         onCreateContainer()
     }
 
-    open fun onCreateContainer() {
-        FragmentContainerView(this).apply {
+    open fun onCreateContainer(): View {
+        return FragmentContainerView(this).apply {
             id = containerId
             setContentView(this)
             if (getFragManager().fragments.isEmpty())
@@ -36,7 +37,7 @@ abstract class FragWrapperActivity : BaseAct(), HasFragContainer {
     }
 
     abstract fun initFrag(): Fragment
-    override fun initView() {}
+    final override fun initView() {}
 }
 
 @Suppress("FunctionNaming")
