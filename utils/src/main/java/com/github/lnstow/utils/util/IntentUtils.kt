@@ -11,6 +11,7 @@ import android.provider.MediaStore
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import com.github.lnstow.utils.BuildConfig
 import com.github.lnstow.utils.LnUtils
 import com.github.lnstow.utils.ext.activity
 import com.github.lnstow.utils.ext.s
@@ -96,6 +97,7 @@ fun Intent?.isValid(ctx: Context? = null) =
 fun String.copyText(ctx: Context = BaseAct.top) {
     val clipboard = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     clipboard.setPrimaryClip(ClipData.newPlainText("label", this))
+    if (LnUtils.resId.copyTextOk == 0) return
     ctx.showToast(LnUtils.resId.copyTextOk.s)
 }
 
@@ -105,7 +107,6 @@ fun Context.hasCamera(): Boolean {
 
 fun Fragment.hasCamera(): Boolean = requireContext().hasCamera()
 
-private const val PROVIDER_NAME = "com.github.lnstow.utils.provider"
 fun File.toContentUri(ctx: Context = BaseAct.top): Uri {
-    return FileProvider.getUriForFile(ctx, PROVIDER_NAME, this)
+    return FileProvider.getUriForFile(ctx, ctx.packageName + ".lnprovider", this)
 }

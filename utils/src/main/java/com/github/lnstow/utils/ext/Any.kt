@@ -5,7 +5,6 @@ import android.text.Spanned
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.recyclerview.widget.RecyclerView
 import com.github.lnstow.utils.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import java.util.Date
@@ -26,7 +25,6 @@ val Long.i get() = this.toInt()
 typealias VGLP = ViewGroup.LayoutParams
 typealias LLLP = LinearLayout.LayoutParams
 typealias MLP = ViewGroup.MarginLayoutParams
-typealias RVH = RecyclerView.ViewHolder
 
 const val MATCH = VGLP.MATCH_PARENT
 const val WRAP = VGLP.WRAP_CONTENT

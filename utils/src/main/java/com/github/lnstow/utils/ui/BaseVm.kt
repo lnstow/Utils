@@ -24,8 +24,8 @@ import kotlinx.coroutines.launch
 abstract class BaseVm : ViewModel(), StateHolder {
 
     protected inline fun launchIn(
-        noinline onError: suspend (Throwable) -> Unit = { err.emit(it) },
-        noinline block: suspend CoroutineScope.() -> Unit
+        crossinline onError: (Throwable) -> Unit = { (err as MutableSharedFlow).tryEmit(it) },
+        crossinline block: suspend CoroutineScope.() -> Unit
     ) = viewModelScope.launch(DSP_IO) {
         try {
             block()

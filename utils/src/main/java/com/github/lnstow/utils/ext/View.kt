@@ -418,3 +418,5 @@ fun TabLayout.setOnTabReselect(tabIdx: Int? = null, block: (TabLayout.Tab?) -> U
 val @receiver:StringRes Int.s get() = BaseAct.top.getString(this)
 val @receiver:ColorRes Int.c get() = BaseAct.top.getColor(this)
 val @receiver:ColorInt Int.hc get() = this or 0xff000000.toInt()
+
+open class RVH(view: View) : RecyclerView.ViewHolder(view)

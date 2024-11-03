@@ -52,9 +52,12 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
 
     abstract fun initView()
 
-    open fun onCatchException(err: Throwable) {
-        if (err is ApiError) showDialog { setMessage(err.message) }
-        else err.defaultCatch()
+    open fun onCatchApiError(err: ApiError) {
+        actBehavior.onCatchApiError(this, err)
+    }
+
+    open fun onCatchOtherException(err: Throwable) {
+        actBehavior.onCatchOtherException(this, err)
     }
 
     open fun onShowToast(toast: ToastInfo) {
@@ -85,7 +88,8 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
             GlobalScope.launch {
                 BaseVm.err.collect {
                     topUi {
-                        onCatchException(it)
+                        if (it is ApiError) onCatchApiError(it)
+                        else onCatchOtherException(it)
                     }
                 }
             }
@@ -111,6 +115,12 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
             it.enableEdgeToEdge()
             it.window.wi.lightBars()
             it.window.decorView.addWindowInsetsPadding()
+        },
+        val onCatchApiError: (BaseAct, ApiError) -> Unit = { act, err ->
+            act.showDialog { setMessage(err.message) }
+        },
+        val onCatchOtherException: (BaseAct, Throwable) -> Unit = { _, err ->
+            err.defaultCatch()
         },
     )
 }
