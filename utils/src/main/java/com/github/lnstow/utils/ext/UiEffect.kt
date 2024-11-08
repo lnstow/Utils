@@ -75,3 +75,43 @@ class ToastDef private constructor(
         c.showToast(msg ?: c.getString(msgId), showShort)
     }
 }
+
+interface LoadingInfo {
+    fun createAndShow(ctx: AccessCtx = BaseAct.top as BaseAct): UiObj
+
+    interface UiObj {
+        fun show(ctx: AccessCtx = BaseAct.top as BaseAct)
+        fun hide(ctx: AccessCtx = BaseAct.top as BaseAct)
+    }
+}
+
+class LoadingDef private constructor(
+    private val msg: String? = null,
+    @StringRes private val msgId: Int = 0,
+) : LoadingInfo {
+    constructor(msg: String) : this(msg, 0)
+    constructor(msg: Int) : this(null, msg)
+
+    override fun createAndShow(ctx: AccessCtx): LoadingInfo.UiObj {
+        return LoadingDefDialog(msg, msgId).also { it.show(ctx) }
+    }
+}
+
+class LoadingDefDialog(
+    private val msg: String? = null,
+    @StringRes private val msgId: Int = 0,
+) : LoadingInfo.UiObj {
+    private var p: ProgressDialog? = null
+    override fun show(ctx: AccessCtx) {
+        if (p != null) p?.show()
+        else {
+            val c = ctx.ctx()
+            p = c.showLoading(msg ?: c.getString(msgId))
+        }
+    }
+
+    override fun hide(ctx: AccessCtx) {
+        p?.dismiss()
+        p = null
+    }
+}

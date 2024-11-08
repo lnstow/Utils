@@ -8,6 +8,7 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.github.lnstow.utils.ext.DSP_IO
 import com.github.lnstow.utils.ext.LaunchParams
+import com.github.lnstow.utils.ext.LoadingInfo
 import com.github.lnstow.utils.ext.ToastInfo
 import com.github.lnstow.utils.ext.valueNN
 import kotlinx.coroutines.CoroutineScope
@@ -24,13 +25,17 @@ import kotlinx.coroutines.launch
 abstract class BaseVm : ViewModel(), StateHolder {
 
     protected inline fun launchIn(
+        loadingInfo: LoadingInfo? = BaseAct.actBehavior.loadingInfo,
         crossinline onError: (Throwable) -> Unit = { (err as MutableSharedFlow).tryEmit(it) },
         crossinline block: suspend CoroutineScope.() -> Unit
     ) = viewModelScope.launch(DSP_IO) {
         try {
+            loading.emit(loadingInfo)
             block()
         } catch (e: Throwable) {
             onError(e)
+        } finally {
+            loading.emit(null)
         }
     }
 
@@ -55,6 +60,7 @@ abstract class BaseVm : ViewModel(), StateHolder {
     }
 
     companion object : StateHolder, PageEvent {
+        val loading = asStateFlow<LoadingInfo?>(null)
         val toast = asEventFlowMultiPage<ToastInfo>(onlyLastEvent = true)
         val err = asEventFlowMultiPage<Throwable>(onlyLastEvent = false)
         override val peBackPressed: SharedFlow<Unit> = asEventFlow()

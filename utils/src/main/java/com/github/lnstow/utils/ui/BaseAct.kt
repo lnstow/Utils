@@ -11,6 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import com.github.lnstow.utils.ext.AccessAct
 import com.github.lnstow.utils.ext.AccessCtx
 import com.github.lnstow.utils.ext.ApiError
+import com.github.lnstow.utils.ext.LoadingDef
+import com.github.lnstow.utils.ext.LoadingInfo
 import com.github.lnstow.utils.ext.ToastInfo
 import com.github.lnstow.utils.ext.addWindowInsetsPadding
 import com.github.lnstow.utils.ext.defaultCatch
@@ -19,8 +21,10 @@ import com.github.lnstow.utils.ext.myApp
 import com.github.lnstow.utils.ext.showDialog
 import com.github.lnstow.utils.ext.wi
 import com.github.lnstow.utils.util.CrashHandler
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
 abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutId),
@@ -68,6 +72,18 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
         actBehavior.setEdgeToEdge(this)
     }
 
+    protected var loadingUi: LoadingInfo.UiObj? = null
+    open fun showLoading(info: LoadingInfo) {
+        hideLoading()
+        loadingUi = info.createAndShow(this)
+    }
+
+    open fun hideLoading() {
+        loadingUi?.hide(this)
+        loadingUi = null
+    }
+
+    @OptIn(FlowPreview::class)
     companion object : HandlerHolder {
         private val actList = mutableListOf<BaseAct>()
         val top: Context get() = actList.lastOrNull() ?: myApp
@@ -93,6 +109,14 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
                     }
                 }
             }
+            GlobalScope.launch {
+                BaseVm.loading.debounce(800).collect {
+                    topUi {
+                        if (it == null) hideLoading()
+                        else showLoading(it)
+                    }
+                }
+            }
 //            TODO("refactor err and toast")
             bindEvent(BaseVm.Companion)
         }
@@ -110,6 +134,7 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
     }
 
     class ActBehavior(
+        val loadingInfo: LoadingInfo? = LoadingDef("Loading..."),
         val enableEdgeToEdge: Boolean,
         val setEdgeToEdge: (BaseAct) -> Unit = {
             it.enableEdgeToEdge()
