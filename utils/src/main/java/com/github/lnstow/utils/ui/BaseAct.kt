@@ -73,14 +73,16 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
     }
 
     protected var loadingUi: LoadingInfo.UiObj? = null
-    open fun showLoading(info: LoadingInfo) {
+    fun showLoading(info: LoadingInfo) {
         hideLoading()
         loadingUi = info.createAndShow(this)
     }
 
-    open fun hideLoading() {
-        loadingUi?.hide(this)
-        loadingUi = null
+    fun hideLoading() {
+        actList.forEach {
+            it.loadingUi?.hide(it)
+            it.loadingUi = null
+        }
     }
 
     @OptIn(FlowPreview::class)
