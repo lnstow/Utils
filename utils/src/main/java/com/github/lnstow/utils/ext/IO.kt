@@ -17,6 +17,10 @@ import java.io.InputStream
 import java.io.Reader
 import java.util.Collections
 
+inline fun <K, V> MutableMap<K, V>.update(key: K, newValue: V.() -> V) {
+    put(key, get(key)!!.newValue())
+}
+
 fun <T> MutableList<T>.move(from: Int, to: Int) = apply {
     if (from != to) add(to.coerceIn(0, size - 1), removeAt(from))
 }

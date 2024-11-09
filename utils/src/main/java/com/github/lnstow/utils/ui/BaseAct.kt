@@ -112,7 +112,7 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
                 }
             }
             GlobalScope.launch {
-                BaseVm.loading.debounce(800).collect {
+                BaseVm.loading.debounce(500).collect {
                     topUi {
                         if (it == null) hideLoading()
                         else showLoading(it)
