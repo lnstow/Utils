@@ -95,6 +95,12 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
             act.runOnUiThread { act.block() }
         }
 
+        fun clearOtherActs(currAct: BaseAct?) {
+            actList.toList().forEach {
+                if (it != currAct) it.finish()
+            }
+        }
+
         init {
             GlobalScope.launch {
                 BaseVm.toast.collect {
