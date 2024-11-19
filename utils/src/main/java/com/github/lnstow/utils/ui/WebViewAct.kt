@@ -13,25 +13,25 @@ import com.github.lnstow.utils.ext.addView
 import com.github.lnstow.utils.ext.getLp
 import com.github.lnstow.utils.ext.newFrag
 
-abstract class WebLp(
+abstract class WebLpAbs(
     val url: String,
     val centerTitle: Boolean = true,
     val fixTitle: String? = null,
     val nextBtn: String? = null,
-    val nextPage: WebLp? = null
+    val nextPage: WebLpAbs? = null
 ) : LaunchParams {
     abstract fun newInstance(): () -> WebFragAbs
 }
 
 class WebViewAct : FragWrapperActivity() {
     override fun initFrag(): Fragment {
-        val lp = getLp<WebLp>()
+        val lp = getLp<WebLpAbs>()
         return newFrag(lp.newInstance(), lp)
     }
 }
 
 open class WebFragAbs : PageBlockFragment() {
-    private val lp by lazy { getLp<WebLp>() }
+    private val lp by lazy { getLp<WebLpAbs>() }
     private lateinit var webView: WebView
 
     override fun LinearLayout.initPageBlock() {
