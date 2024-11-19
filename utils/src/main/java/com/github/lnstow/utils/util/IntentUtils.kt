@@ -11,7 +11,6 @@ import android.provider.MediaStore
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import com.github.lnstow.utils.BuildConfig
 import com.github.lnstow.utils.LnUtils
 import com.github.lnstow.utils.ext.activity
 import com.github.lnstow.utils.ext.s

@@ -1,0 +1,90 @@
+package com.github.lnstow.utils.ui
+
+import android.webkit.WebChromeClient
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.LinearLayout
+import androidx.fragment.app.Fragment
+import com.github.lnstow.utils.ext.LaunchParams
+import com.github.lnstow.utils.ext.MATCH
+import com.github.lnstow.utils.ext.VGLP
+import com.github.lnstow.utils.ext.addView
+import com.github.lnstow.utils.ext.getLp
+import com.github.lnstow.utils.ext.newFrag
+
+abstract class WebLp(
+    val url: String,
+    val centerTitle: Boolean = true,
+    val fixTitle: String? = null,
+    val nextBtn: String? = null,
+    val nextPage: WebLp? = null
+) : LaunchParams {
+    abstract fun newInstance(): () -> WebFragAbs
+}
+
+class WebViewAct : FragWrapperActivity() {
+    override fun initFrag(): Fragment {
+        val lp = getLp<WebLp>()
+        return newFrag(lp.newInstance(), lp)
+    }
+}
+
+open class WebFragAbs : PageBlockFragment() {
+    private val lp by lazy { getLp<WebLp>() }
+    private lateinit var webView: WebView
+
+    override fun LinearLayout.initPageBlock() {
+        webView = addView(::WebView) {
+            layoutParams = VGLP(MATCH, MATCH)
+            settings.apply {
+                domStorageEnabled = true
+                javaScriptEnabled = true
+                cacheMode = WebSettings.LOAD_DEFAULT
+                displayZoomControls = false
+                mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            }
+            addJavascriptInterface(jsBridge, jsBridge.name)
+            webViewClient = BaseWebViewClient()
+            webChromeClient = BaseChromeClient()
+            initWebView(this)
+            loadUrl(lp.url)
+        }
+        if (com.github.lnstow.utils.ext.debug) WebView.setWebContentsDebuggingEnabled(true)
+    }
+
+    protected open val jsBridge: JsBridge = JsBridge()
+
+    protected open inner class JsBridge {
+        open val name: String = "JsBridge"
+//        @JavascriptInterface
+//        fun setExtraNavBtn(options: String) {
+//            applyNavBtn(options.fromJson())
+//        }
+    }
+
+    override fun onDestroy() {
+        webView.removeJavascriptInterface(jsBridge.name)
+        super.onDestroy()
+    }
+
+    protected open fun initWebView(webView: WebView) {}
+    protected open fun updateTitle(title: CharSequence?) {
+        title ?: return
+        tb?.titleTv?.text = lp.fixTitle ?: title
+    }
+
+    protected open inner class BaseChromeClient : WebChromeClient() {
+        override fun onReceivedTitle(view: WebView?, title: String?) {
+            super.onReceivedTitle(view, title)
+            updateTitle(title)
+        }
+    }
+
+    protected open inner class BaseWebViewClient : WebViewClient() {
+        override fun onPageFinished(view: WebView, url: String) {
+            super.onPageFinished(view, url)
+            updateTitle(view.title)
+        }
+    }
+}

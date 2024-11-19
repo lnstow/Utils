@@ -176,6 +176,7 @@ fun TextView.singleLine(
     setEllipsize(ellipsize)
     if (maxEms != null) setMaxEms(maxEms)
     if (maxWidth != null) setMaxWidth(maxWidth)
+    isSelected = true
 }
 
 fun EditText.setTextAndSel(text: CharSequence) {

@@ -139,4 +139,4 @@ inline fun <VG : ViewGroup, TB : CustomToolbar> TB.attachTo(
 fun <VG : ViewGroup, TB : CustomToolbar> TB.attachTo(vg: VG): TB =
     this.also { vg.addView(tbView, MATCH, heightDp.toPx()) }
 
-fun TextView.titleWidthManuallyLimit() = singleLine(maxWidth = 180.toPx())
+fun TextView.titleWidthManuallyLimit() = singleLine(maxWidth = 230.toPx())

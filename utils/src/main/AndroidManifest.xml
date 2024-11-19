@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application>
+        <activity android:name=".ui.WebViewAct" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.lnprovider"

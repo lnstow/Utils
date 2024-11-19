@@ -10,13 +10,15 @@ import androidx.core.view.WindowInsetsControllerCompat
 
 //  https://blog.csdn.net/StjunF/article/details/121840122
 //  https://juejin.cn/post/7395866692772085800#heading-4
-fun View.addWindowInsetsPadding(consumed: Boolean = true) {
+fun View.addWindowInsetsPadding(
+    consumed: Boolean = true,
+    @InsetsType barType: Int = WIB.systemBars()
+) {
     ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
         val cutout = insets.displayCutout?.boundingRects
         if (!cutout.isNullOrEmpty()) {
             val bars = insets.getInsets(
-                WindowInsetsCompat.Type.systemBars()
-                        or WindowInsetsCompat.Type.displayCutout()
+                barType or WindowInsetsCompat.Type.displayCutout()
             )
             v.setPadding(bars.left, bars.top, bars.right, bars.bottom)
         }

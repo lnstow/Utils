@@ -73,11 +73,17 @@ fun File.getSize(): Long {
     }
 }
 
-fun ImageView.loadUrl(url: String?) {
+fun ImageView.loadUrl(url: String?, placeholder: Int? = null, error: Int? = null) {
     Glide.with(context.activity()!!)
         .load(url)
 //        .load(if (url.isNullOrBlank()) "TEST_BOOK_COVER" else url)
 //        .centerInside()
+        .run {
+            var b = this
+            if (placeholder != null) b = b.placeholder(placeholder)
+            if (error != null) b = b.error(error)
+            b
+        }
         .transition(DrawableTransitionOptions.withCrossFade(300))
         .into(this)
 }

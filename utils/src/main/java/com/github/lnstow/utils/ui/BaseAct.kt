@@ -142,13 +142,13 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
     }
 
     class ActBehavior(
-        val loadingInfo: LoadingInfo? = LoadingDef("Loading..."),
         val enableEdgeToEdge: Boolean,
         val setEdgeToEdge: (BaseAct) -> Unit = {
             it.enableEdgeToEdge()
             it.window.wi.lightBars()
             it.window.decorView.addWindowInsetsPadding()
         },
+        val loadingInfo: LoadingInfo? = LoadingDef("Loading..."),
         val onCatchApiError: (BaseAct, ApiError) -> Unit = { act, err ->
             act.showDialog { setMessage(err.message) }
         },

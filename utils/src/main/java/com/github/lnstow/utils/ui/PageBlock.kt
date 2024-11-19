@@ -28,7 +28,7 @@ typealias ClickEv2 = () -> Unit
 
 @Suppress("FunctionNaming")
 fun PageBlockContainerLayout(ctx: Context) = LinearLayout(ctx).apply {
-    fitsSystemWindows = true
+    fitsSystemWindows = !BaseAct.actBehavior.enableEdgeToEdge
     layoutParams = VGLP(MATCH, MATCH)
     orientation = LinearLayout.VERTICAL
     isClickable = true
@@ -55,7 +55,9 @@ abstract class PageBlockFragment : BaseFrag() {
     }
 
     override fun initView() {
-        (requireView() as LinearLayout).initPageBlock()
+        val v = requireView() as LinearLayout
+        tb?.attachTo(v)
+        v.initPageBlock()
     }
 
     abstract fun LinearLayout.initPageBlock()
