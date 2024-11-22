@@ -1,5 +1,6 @@
 package com.github.lnstow.utils.ui
 
+import android.content.Context
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -12,6 +13,7 @@ import com.github.lnstow.utils.ext.VGLP
 import com.github.lnstow.utils.ext.addView
 import com.github.lnstow.utils.ext.getLp
 import com.github.lnstow.utils.ext.newFrag
+import com.github.lnstow.utils.ext.startAct
 
 abstract class WebLpAbs(
     val url: String,
@@ -21,6 +23,9 @@ abstract class WebLpAbs(
     val nextPage: WebLpAbs? = null
 ) : LaunchParams {
     abstract fun newInstance(): () -> WebFragAbs
+    fun openLink(ctx: Context = BaseAct.top) {
+        ctx.startAct<WebViewAct>(this)
+    }
 }
 
 class WebViewAct : FragWrapperActivity() {

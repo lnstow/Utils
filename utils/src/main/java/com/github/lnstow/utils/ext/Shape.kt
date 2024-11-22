@@ -3,11 +3,13 @@ package com.github.lnstow.utils.ext
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Outline
+import android.graphics.Path
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.ScaleDrawable
+import android.os.Build
 import android.view.Gravity
 import android.view.View
 import android.view.ViewOutlineProvider
@@ -16,6 +18,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.FloatRange
 import androidx.annotation.Px
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toDrawable
@@ -36,6 +39,31 @@ private class RoundCorner(val radius: Int) : ViewOutlineProvider() {
         // 如果不设置，不会裁剪背景色，圆角无效
         view?.clipToOutline = true
         view?.run { outline?.setRoundRect(0, 0, width, height, radius.toFloat()) }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.R)
+fun <T : View> T.roundPath(path: View.() -> Path) = this.apply { outlineProvider = RoundPath(path) }
+
+@RequiresApi(Build.VERSION_CODES.R)
+fun <T : View> T.round(@Dp vararg radii: Int) = roundPath {
+    Path().apply {
+        addRoundRect(
+            0f, 0f, width.f, height.f,
+            FloatArray(radii.size) { radii[it].toPx().f },
+            Path.Direction.CW,
+        )
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.R)
+private class RoundPath(val path: View.() -> Path) : ViewOutlineProvider() {
+    override fun getOutline(view: View?, outline: Outline?) {
+        // outline默认alpha是1，会遮挡边框附近的背景色
+        outline?.alpha = 0f
+        // 如果不设置，不会裁剪背景色，圆角无效
+        view?.clipToOutline = true
+        view?.run { outline?.setPath(path()) }
     }
 }
 

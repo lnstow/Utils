@@ -103,14 +103,14 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
 
         init {
             GlobalScope.launch {
-                BaseVm.toast.collect {
+                BaseVm.toast.debounce(200).collect {
                     topUi {
                         onShowToast(it)
                     }
                 }
             }
             GlobalScope.launch {
-                BaseVm.err.collect {
+                BaseVm.err.debounce(300).collect {
                     topUi {
                         if (it is ApiError) onCatchApiError(it)
                         else onCatchOtherException(it)
