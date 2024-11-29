@@ -10,8 +10,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.github.lnstow.utils.ext.ApiError
 import com.github.lnstow.utils.ext.IApiResp
+import com.github.lnstow.utils.ext.expandTouchArea
 import com.github.lnstow.utils.ext.hc
 import com.github.lnstow.utils.ext.myApp
+import com.github.lnstow.utils.ext.toPx
 import com.github.lnstow.utils.ui.BaseAct
 import com.github.lnstow.utils.ui.BaseVm
 import kotlinx.coroutines.delay
@@ -42,6 +44,7 @@ class MainActivity : BaseAct() {
     override fun initView() {
         vm.test()
         findViewById<TextView>(R.id.test_tv).apply {
+            expandTouchArea(50.toPx())
             setOnClickListener {
                 TextInputDialog().show(supportFragmentManager, null)
             }
@@ -49,10 +52,6 @@ class MainActivity : BaseAct() {
     }
 
     private val vm by viewModels<MainVm>()
-
-    override fun ctx(): Context {
-        return this
-    }
 }
 
 class MainVm : BaseVm() {

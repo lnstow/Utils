@@ -17,6 +17,7 @@ import android.util.Pair
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.TouchDelegate
 import android.view.View
@@ -43,6 +44,7 @@ import androidx.core.view.postDelayed
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.github.lnstow.utils.LnUtils.resId
 import com.github.lnstow.utils.ui.BaseAct
 import com.google.android.material.tabs.TabLayout
@@ -420,4 +422,15 @@ val @receiver:StringRes Int.s get() = BaseAct.top.getString(this)
 val @receiver:ColorRes Int.c get() = BaseAct.top.getColor(this)
 val @receiver:ColorInt Int.hc get() = this or 0xff000000.toInt()
 
+@Deprecated("Use RVH2", ReplaceWith("RVH2(view)"))
 open class RVH(view: View) : RecyclerView.ViewHolder(view)
+
+open class RVH2<T : View>(val view: T) : RecyclerView.ViewHolder(view)
+
+open class VbVh<T : ViewBinding>(val vb: T) : RecyclerView.ViewHolder(vb.root) {
+    constructor(
+        create: (
+            inflater: LayoutInflater, parent: ViewGroup, attach: Boolean
+        ) -> T, vg: ViewGroup
+    ) : this(create(LayoutInflater.from(vg.context), vg, false))
+}

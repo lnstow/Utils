@@ -101,6 +101,10 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
             }
         }
 
+        fun finishPreviousAct() {
+            actList[actList.lastIndex - 1].finish()
+        }
+
         init {
             GlobalScope.launch {
                 BaseVm.toast.debounce(200).collect {

@@ -30,12 +30,12 @@ abstract class BaseVm : ViewModel(), StateHolder {
         crossinline block: suspend CoroutineScope.() -> Unit
     ) = viewModelScope.launch(DSP_IO) {
         try {
-            loading.emit(loadingInfo)
+            if (loadingInfo != null) loading.emit(loadingInfo)
             block()
         } catch (e: Throwable) {
             onError(e)
         } finally {
-            loading.emit(null)
+            if (loadingInfo != null) loading.emit(null)
         }
     }
 

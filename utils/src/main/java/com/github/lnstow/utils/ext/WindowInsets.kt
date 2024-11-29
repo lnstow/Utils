@@ -12,16 +12,16 @@ import androidx.core.view.WindowInsetsControllerCompat
 //  https://juejin.cn/post/7395866692772085800#heading-4
 fun View.addWindowInsetsPadding(
     consumed: Boolean = true,
-    @InsetsType barType: Int = WIB.systemBars()
+    @InsetsType barType: Int = WIB.systemBars(),
+    doOnWindowChange: ((bars: androidx.core.graphics.Insets) -> Unit)? = null
 ) {
     ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
-        val cutout = insets.displayCutout?.boundingRects
-        if (!cutout.isNullOrEmpty()) {
-            val bars = insets.getInsets(
-                barType or WindowInsetsCompat.Type.displayCutout()
-            )
-            v.setPadding(bars.left, bars.top, bars.right, bars.bottom)
-        }
+        val bars = insets.getInsets(
+            barType or WindowInsetsCompat.Type.displayCutout()
+        )
+        doOnWindowChange?.invoke(bars) ?: v.setPadding(
+            bars.left, bars.top, bars.right, bars.bottom
+        )
         if (consumed) WindowInsetsCompat.CONSUMED
         else insets
     }
@@ -30,9 +30,14 @@ fun View.addWindowInsetsPadding(
 private typealias WI = WindowInsetsControllerCompat
 typealias WIB = WindowInsetsCompat.Type
 
-fun WI.showSystemBars(show: Boolean = true, @InsetsType barType: Int = WIB.systemBars()) {
+fun WI.showSystemBars(@InsetsType barType: Int = WIB.systemBars()) {
     systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-    if (show) show(barType) else hide(barType)
+    show(barType)
+}
+
+fun WI.hideSystemBars(@InsetsType barType: Int = WIB.systemBars()) {
+    systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    hide(barType)
 }
 
 fun WI.lightBars(
