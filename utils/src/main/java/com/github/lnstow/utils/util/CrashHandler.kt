@@ -10,6 +10,10 @@ import com.github.lnstow.utils.ext.logSt
 import com.github.lnstow.utils.ext.showDialog
 import com.github.lnstow.utils.ui.BaseAct
 import java.io.File
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+import java.nio.channels.UnresolvedAddressException
 import kotlin.system.exitProcess
 
 object CrashHandler : Thread.UncaughtExceptionHandler {
@@ -39,3 +43,7 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
 
     private val crashFile by lazy { File(fileDir, "crash") }
 }
+
+fun Throwable.isNetworkError() =
+    this is SocketTimeoutException || this is UnknownHostException || this is ConnectException
+            || this is UnresolvedAddressException

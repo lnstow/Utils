@@ -31,6 +31,7 @@ class MainActivity : BaseAct() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.light(0x009688.hc, 0x009688.hc),
+            navigationBarStyle = SystemBarStyle.light(0x009688.hc, 0x009688.hc),
         )
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->

@@ -15,7 +15,7 @@ object AppInfo {
             pkgInfo.longVersionCode.toInt()
         else pkgInfo.versionCode
     val locale: Locale get() = Locale.getDefault()
-    val verName: String get() = pkgInfo.versionName
+    val verName: String get() = pkgInfo.versionName!!
     val dw: Int get() = dm.widthPixels
     val dh: Int get() = dm.heightPixels
 
