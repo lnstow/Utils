@@ -2,11 +2,9 @@ package com.github.lnstow.utils.ext
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.view.Window
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.FloatRange
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -63,22 +61,22 @@ private fun checkTransparent(@ColorInt color: Int) {
     }
 }
 
-@Deprecated("Android 15 之后废弃的属性", ReplaceWith("ComponentActivity.enableEdgeToEdge()"))
-fun setStatusBarColor(@ColorRes colorId: Int, window: Window?) {
-    setStatusBarColorCode(getColorById(window?.context ?: return, colorId), window)
-}
+//@Deprecated("Android 15 之后废弃的属性", ReplaceWith("ComponentActivity.enableEdgeToEdge()"))
+//fun setStatusBarColor(@ColorRes colorId: Int, window: Window?) {
+//    setStatusBarColorCode(getColorById(window?.context ?: return, colorId), window)
+//}
 
-@Deprecated("Android 15 之后废弃的属性", ReplaceWith("ComponentActivity.enableEdgeToEdge()"))
-fun setStatusBarColorCode(@ColorInt color: Int, window: Window?) {
-    window ?: return
-    window.statusBarColor = color
-    window.navigationBarColor = color
-    window.wi.lightBars(
-        isLight = runCatching { window.statusBarColor.isLight }.getOrDefault(
-            AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES
-        )
-    )
-}
+//@Deprecated("Android 15 之后废弃的属性", ReplaceWith("ComponentActivity.enableEdgeToEdge()"))
+//fun setStatusBarColorCode(@ColorInt color: Int, window: Window?) {
+//    window ?: return
+//    window.statusBarColor = color
+//    window.navigationBarColor = color
+//    window.wi.lightBars(
+//        isLight = runCatching { window.statusBarColor.isLight }.getOrDefault(
+//            AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES
+//        )
+//    )
+//}
 
 fun Fragment.windowBgColor(@ColorRes id: Int) = requireActivity().windowBgColor(id)
 fun FragmentActivity.windowBgColor(@ColorRes id: Int) {
