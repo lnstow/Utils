@@ -15,6 +15,7 @@ import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.util.Pair
 import android.util.TypedValue
+import android.view.GestureDetector
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -47,6 +48,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.github.lnstow.utils.LnUtils.resId
 import com.github.lnstow.utils.ui.BaseAct
+import com.github.lnstow.utils.ui.ClickEv
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.internal.bind.util.ISO8601Utils
 import java.util.Date
@@ -433,4 +435,17 @@ open class VbVh<T : ViewBinding>(val vb: T) : RecyclerView.ViewHolder(vb.root) {
             inflater: LayoutInflater, parent: ViewGroup, attach: Boolean
         ) -> T, vg: ViewGroup
     ) : this(create(LayoutInflater.from(vg.context), vg, false))
+}
+
+fun RecyclerView.setOnClick(block: ClickEv) {
+    val gestureDetector = GestureDetector(
+        context, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onSingleTapUp(e: MotionEvent): Boolean {
+                block(this@setOnClick)
+                return false
+            }
+        })
+    setOnTouchListener { v, event ->
+        gestureDetector.onTouchEvent(event)
+    }
 }
