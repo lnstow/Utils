@@ -11,9 +11,12 @@ import com.github.lnstow.utils.ext.LaunchParams
 import com.github.lnstow.utils.ext.LoadingInfo
 import com.github.lnstow.utils.ext.ToastInfo
 import com.github.lnstow.utils.ext.valueNN
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -58,6 +61,12 @@ abstract class BaseVm : ViewModel(), StateHolder {
             if (observeOther()) asFlow().launchIn(this@launch)
         }
     }
+
+    protected fun <T> collectEvent(
+        flow: Flow<T>,
+        dsp: CoroutineDispatcher = Dispatchers.Default,
+        block: suspend (T) -> Unit
+    ) = viewModelScope.launch(dsp) { flow.collect { block(it) } }
 
     companion object : StateHolder, PageEvent {
         val loading = asStateFlow<LoadingInfo?>(null)
