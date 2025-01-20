@@ -97,6 +97,10 @@ interface IApiResp<T> {
     fun msgNonNull() = if (message.isNullOrBlank()) "no message" else message
 }
 
+inline fun Throwable.matchCode(
+    vararg code: Any, block: (resp: IApiResp<*>) -> Unit
+) = if (this is ApiError && resp.code in code) block(this.resp) else null
+
 class ApiError(val resp: IApiResp<*>) : Exception(resp.msgNonNull())
 
 fun Uri.copyToFile(file: File, context: Context = BaseAct.top) {
@@ -109,8 +113,8 @@ fun Uri.copyToFile(file: File, context: Context = BaseAct.top) {
 
 fun Uri.loadAsBitmap(context: Context = BaseAct.top): Bitmap? {
     return context.contentResolver.openInputStream(this)?.use { ins ->
-        BitmapFactory.decodeStream(ins, null,
-            BitmapFactory.Options().apply {
+        BitmapFactory.decodeStream(
+            ins, null, BitmapFactory.Options().apply {
 //                inSampleSize = 2
                 inPreferredConfig = Bitmap.Config.RGB_565
             }
@@ -138,4 +142,9 @@ fun Bitmap.compressToFile(file: File) {
     } else {
         BaseAct.topUi { showToast("unsupported file type") }
     }
+}
+
+fun String.takeEllipsis(maxLen: Int): String {
+    if (length > maxLen) return take(maxLen) + "..."
+    return this
 }

@@ -10,8 +10,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.github.lnstow.utils.ext.ApiError
 import com.github.lnstow.utils.ext.IApiResp
+import com.github.lnstow.utils.ext.ToastDef
 import com.github.lnstow.utils.ext.expandTouchArea
 import com.github.lnstow.utils.ext.hc
+import com.github.lnstow.utils.ext.matchCode
 import com.github.lnstow.utils.ext.myApp
 import com.github.lnstow.utils.ext.toPx
 import com.github.lnstow.utils.ui.BaseAct
@@ -57,7 +59,11 @@ class MainActivity : BaseAct() {
 
 class MainVm : BaseVm() {
     fun test() {
-        launchIn {
+        launchIn(onError = {
+            it.matchCode(2, 3, 1) {
+                toast.emit(ToastDef("match code"))
+            } ?: toast.emit(ToastDef("no match"))
+        }) {
             delay(1500)
             throw ApiError(
                 object : IApiResp<String> {
@@ -74,5 +80,6 @@ class MainVm : BaseVm() {
                 }
             )
         }
+
     }
 }
