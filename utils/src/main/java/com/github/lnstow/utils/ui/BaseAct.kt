@@ -17,7 +17,6 @@ import com.github.lnstow.utils.ext.ToastInfo
 import com.github.lnstow.utils.ext.addWindowInsetsPadding
 import com.github.lnstow.utils.ext.defaultCatch
 import com.github.lnstow.utils.ext.lightBars
-import com.github.lnstow.utils.ext.myApp
 import com.github.lnstow.utils.ext.showDialog
 import com.github.lnstow.utils.ext.wi
 import com.github.lnstow.utils.util.CrashHandler
@@ -87,11 +86,11 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
 
     @OptIn(FlowPreview::class)
     companion object : HandlerHolder {
-        private val actList = mutableListOf<BaseAct>()
-        val top: Context get() = actList.lastOrNull() ?: myApp
-        val bottom: Context get() = actList.firstOrNull() ?: myApp
+        val actList = mutableListOf<BaseAct>()
+        val top: BaseAct get() = actList.last()
+        val bottom: BaseAct get() = actList.first()
         inline fun topUi(crossinline block: BaseAct.() -> Unit) {
-            val act = top as? BaseAct ?: return
+            val act = top
             act.runOnUiThread { act.block() }
         }
 
