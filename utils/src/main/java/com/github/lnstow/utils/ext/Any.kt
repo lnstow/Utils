@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.github.lnstow.utils.BuildConfig
 import kotlinx.coroutines.Dispatchers
-import java.util.Date
 
 /** 使用[logSt]输出当前代码的调用堆栈 */
 private val st get() = Throwable("print stack trace").stackTraceToString()
@@ -35,8 +34,6 @@ const val IN_EX = Spanned.SPAN_INCLUSIVE_EXCLUSIVE
 val DSP_IO = Dispatchers.IO
 val DSP_MAIN = Dispatchers.Main
 
-val Date.yearFriendly get() = year + 1900
-val Date.monthFriendly get() = month + 1
 
 object NumUnits {
     const val KB = 1024L
