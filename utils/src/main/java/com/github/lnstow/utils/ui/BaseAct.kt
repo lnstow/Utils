@@ -55,6 +55,11 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
 
     abstract fun initView()
 
+    open fun onCatchException(err: Throwable) {
+        if (err is ApiError) onCatchApiError(err)
+        else onCatchOtherException(err)
+    }
+
     open fun onCatchApiError(err: ApiError) {
         actBehavior.onCatchApiError(this, err)
     }
@@ -115,8 +120,7 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
             GlobalScope.launch {
                 BaseVm.err.debounce(300).collect {
                     topUi {
-                        if (it is ApiError) onCatchApiError(it)
-                        else onCatchOtherException(it)
+                        onCatchException(it)
                     }
                 }
             }

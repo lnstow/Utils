@@ -10,8 +10,11 @@ import kotlinx.coroutines.Dispatchers
 
 /** 使用[logSt]输出当前代码的调用堆栈 */
 private val st get() = Throwable("print stack trace").stackTraceToString()
-fun <T> T.log(prefix: String = "") = this.also { Log.d("ln", "log debug $prefix $it") }
-fun <T> T.logSt(prefix: String = "") = this.also { Log.d("ln", "log debug $prefix $it\n$st") }
+fun <T> T.log(prefix: String = "") =
+    if (!debug) this else this.also { Log.d("ln", "log debug $prefix $it") }
+
+fun <T> T.logSt(prefix: String = "") =
+    if (!debug) this else this.also { Log.d("ln", "log debug $prefix $it\n$st") }
 
 inline fun <reified T> Any?.as2(block: T.() -> Unit = { }): T = (this as T).apply(block)
 

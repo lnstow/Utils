@@ -1,11 +1,16 @@
 package com.github.lnstow.utils
 
-import android.content.Context
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.SystemBarStyle
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.github.lnstow.utils.ext.ApiError
@@ -29,13 +34,22 @@ class MainActivity : BaseAct() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         myApp = application
-        setContentView(R.layout.activity_main)
+        setContent {
+            MaterialTheme {
+                Scaffold { p ->
+                    Text("hello", Modifier.padding(p.calculateTopPadding()))
+                    Test.Test()
+                }
+            }
+        }
+//        setContentView(R.layout.activity_main)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.light(0x009688.hc, 0x009688.hc),
             navigationBarStyle = SystemBarStyle.light(0x009688.hc, 0x009688.hc),
         )
 
+        return
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -45,6 +59,7 @@ class MainActivity : BaseAct() {
     }
 
     override fun initView() {
+        return
         vm.test()
         findViewById<TextView>(R.id.test_tv).apply {
             expandTouchArea(50.toPx())
