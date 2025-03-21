@@ -95,7 +95,7 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
         val top: BaseAct get() = actList.last()
         val bottom: BaseAct get() = actList.first()
         inline fun topUi(crossinline block: BaseAct.() -> Unit) {
-            val act = top
+            val act = kotlin.runCatching { top }.getOrNull() ?: return
             act.runOnUiThread { act.block() }
         }
 

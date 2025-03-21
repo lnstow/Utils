@@ -1,4 +1,4 @@
-package com.github.lnstow.utils
+package com.github.lnstow.utils.no
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme

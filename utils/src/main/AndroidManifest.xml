@@ -5,7 +5,7 @@
     <application>
         <activity android:name=".ui.WebViewAct" />
         <provider
-            android:name="androidx.core.content.FileProvider"
+            android:name=".util.LnProvider"
             android:authorities="${applicationId}.lnprovider"
             android:exported="false"
             android:grantUriPermissions="true">

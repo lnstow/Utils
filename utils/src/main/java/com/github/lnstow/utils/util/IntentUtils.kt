@@ -53,8 +53,12 @@ object IntentUtils {
         intent: Intent,
         requestCode: Int,
         fragment: Fragment? = null,
-        context: Context? = null
+        context: Context? = null,
     ) {
+        if (!intent.isValid()) {
+            (fragment?.context ?: context)?.showToast("not found")
+            return
+        }
         when {
             fragment != null -> fragment.startActivityForResult(intent, requestCode)
             else -> context?.activity()?.startActivityForResult(intent, requestCode)
@@ -78,7 +82,7 @@ object IntentUtils {
     fun openCameraOrAlbum(
         fileTarget: File,
         frag: Fragment? = null,
-        context: Context = BaseAct.top
+        context: Context = BaseAct.top,
     ): Uri {
         val (take, uri) = createCameraIntent(fileTarget, context)
         take.addCategory(Intent.CATEGORY_DEFAULT)
