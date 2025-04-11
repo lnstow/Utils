@@ -3,6 +3,9 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id 'maven-publish'
+//    id 'kotlin-parcelize'
+//    id 'org.jetbrains.kotlin.jvm' version libs.versions.kotlin
+    id 'org.jetbrains.kotlin.plugin.serialization' version libs.versions.kotlin
 }
 
 android {
@@ -67,7 +70,7 @@ dependencies {
     api libs.androidx.ui.tooling.preview
     api libs.androidx.material3
 //    api 'androidx.compose.foundation:foundation'
-    api libs.androidx.material3.adaptive.navigation.suite
+//    api libs.androidx.material3.adaptive.navigation.suite
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
@@ -76,4 +79,8 @@ dependencies {
 //    androidTestImplementation libs.androidx.ui.test.junit4
     debugApi libs.androidx.ui.tooling
 //    debugImplementation libs.androidx.ui.test.manifest
+
+    api 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1'
+//    implementation 'com.google.code.gson:gson:2.11.0'
+
 }
