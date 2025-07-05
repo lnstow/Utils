@@ -1,7 +1,6 @@
 package com.github.lnstow.utils.ext
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -13,41 +12,37 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-/**
- * Created by jason on 2020/12/23
- */
-
 /** 获取非空值，valueNonNull */
-val <T> LiveData<T>.valueNN get() = value!!
+//val <T> LiveData<T>.valueNN get() = value!!
 
-@Suppress("FunctionNaming")
-inline fun <T> MediatorLiveData(
-    init: T?,
-    vararg source: LiveData<*>,
-    crossinline onEach: MediatorLiveData<T>.() -> Unit
-) = MediatorLiveData<T>().apply {
-    if (init != null) value = init
-    addSources(*source, onEach = onEach)
-}
+//@Suppress("FunctionNaming")
+//inline fun <T> MediatorLiveData(
+//    init: T?,
+//    vararg source: LiveData<*>,
+//    crossinline onEach: MediatorLiveData<T>.() -> Unit
+//) = MediatorLiveData<T>().apply {
+//    if (init != null) value = init
+//    addSources(*source, onEach = onEach)
+//}
 
-inline fun <T> MediatorLiveData<T>.addSources(
-    vararg source: LiveData<*>,
-    crossinline onEach: MediatorLiveData<T>.() -> Unit
-) {
-    val onChange = { _: Any -> onEach() }
-    source.forEach { addSource(it, onChange) }
-}
+//inline fun <T> MediatorLiveData<T>.addSources(
+//    vararg source: LiveData<*>,
+//    crossinline onEach: MediatorLiveData<T>.() -> Unit
+//) {
+//    val onChange = { _: Any -> onEach() }
+//    source.forEach { addSource(it, onChange) }
+//}
 
 /**
  * 避免在 Fragment 使用 this 来观察 Livedata
  */
-fun <T> Fragment.observe(liveData: LiveData<T>, observer: Observer<T>) {
-    liveData.observe(viewLifecycleOwner, observer)
-}
+//fun <T> Fragment.observe(liveData: LiveData<T>, observer: Observer<T>) {
+//    liveData.observe(viewLifecycleOwner, observer)
+//}
 
-fun <T> FragmentActivity.observe(liveData: LiveData<T>, observer: Observer<T>) {
-    liveData.observe(this, observer)
-}
+//fun <T> FragmentActivity.observe(liveData: LiveData<T>, observer: Observer<T>) {
+//    liveData.observe(this, observer)
+//}
 
 inline fun LifecycleOwner.observeLifecycle(crossinline state: (Lifecycle.Event) -> Unit) =
     lifecycle.addObserver(LifecycleEventObserver { _, ev -> state(ev) })

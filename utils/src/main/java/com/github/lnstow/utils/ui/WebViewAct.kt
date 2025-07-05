@@ -1,6 +1,7 @@
 package com.github.lnstow.utils.ui
 
 import android.content.Context
+import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -20,7 +21,7 @@ abstract class WebLpAbs(
     val centerTitle: Boolean = true,
     val fixTitle: String? = null,
     val nextBtn: String? = null,
-    val nextPage: WebLpAbs? = null
+    val nextPage: WebLpAbs? = null,
 ) : LaunchParams {
     abstract fun newInstance(): () -> WebFragAbs
     fun openLink(ctx: Context = BaseAct.top) {
@@ -42,6 +43,11 @@ open class WebFragAbs : PageBlockFragment() {
     override fun LinearLayout.initPageBlock() {
         webView = addView(::WebView) {
             layoutParams = VGLP(MATCH, MATCH)
+
+            // 明确为 WebView 启用硬件层，以避免渲染时序冲突
+            // 解决在部分旧机型上 返回按钮消失
+            setLayerType(View.LAYER_TYPE_HARDWARE, null)
+
             settings.apply {
                 domStorageEnabled = true
                 javaScriptEnabled = true

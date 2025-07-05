@@ -1,71 +1,50 @@
 package com.github.lnstow.utils.ui
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.github.lnstow.utils.ext.DSP_IO
 import com.github.lnstow.utils.ext.LaunchParams
 import com.github.lnstow.utils.ext.LoadingInfo
 import com.github.lnstow.utils.ext.ToastInfo
-import com.github.lnstow.utils.ext.valueNN
+import com.github.lnstow.utils.ui.BaseVm.Companion.emit2
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 
 abstract class BaseVm : ViewModel(), StateHolder {
+    override val scope: CoroutineScope get() = viewModelScope
 
     protected inline fun launchIn(
         loadingInfo: LoadingInfo? = BaseAct.actBehavior.loadingInfo,
-        crossinline onError: (Throwable) -> Unit = { (err as MutableSharedFlow).tryEmit(it) },
-        crossinline block: suspend CoroutineScope.() -> Unit
-    ) = viewModelScope.launch(DSP_IO) {
-        try {
-            if (loadingInfo != null) loading.emit(loadingInfo)
-            block()
-        } catch (e: Throwable) {
-            onError(e)
-        } finally {
-            if (loadingInfo != null) loading.emit(null)
-        }
-    }
+        noinline onError: (Exception) -> Unit = onError2,
+        crossinline block: suspend CoroutineScope.() -> Unit,
+    ) = viewModelScope.launchInLoading(loadingInfo, onError, block)
 
-    protected fun <T> SharedFlow<T>.emit(value: T) {
-        this as MutableSharedFlow
-        if (!tryEmit(value)) viewModelScope.launch { emit(value) }
-    }
-
-    protected inline fun <T> LiveData<T>.update(v: T.() -> T) = set(valueNN.v())
-    protected fun <T> LiveData<T>.repost() = post(valueNN)
-    protected inline fun <T> StateFlow<T>.update(v: T.() -> T) {
-        (this as MutableStateFlow).updateAndGet(v)
-    }
+    //    protected inline fun <T> LiveData<T>.update(v: T.() -> T) = set(valueNN.v())
+    //    protected fun <T> LiveData<T>.repost() = post(valueNN)
 
     /** 返回true表示子类需要启动观察者 */
-    protected open fun MediatorLiveData<*>.observeOther() = false
-    private val observeOther = viewModelScope.launch {
-        delay(300)
-        MediatorLiveData<Unit>().apply {
-            if (observeOther()) asFlow().launchIn(this@launch)
-        }
-    }
+//    protected open fun MediatorLiveData<*>.observeOther() = false
+//    private val observeOther = viewModelScope.launch {
+//        delay(300)
+//        MediatorLiveData<Unit>().apply {
+//            if (observeOther()) asFlow().launchIn(this@launch)
+//        }
+//    }
 
     protected fun <T> collectEvent(
         flow: Flow<T>,
         dsp: CoroutineDispatcher = Dispatchers.Default,
-        block: suspend (T) -> Unit
+        block: suspend (T) -> Unit,
     ) = viewModelScope.launch(dsp) { flow.collect { block(it) } }
 
     companion object : StateHolder, PageEvent {
@@ -78,17 +57,43 @@ abstract class BaseVm : ViewModel(), StateHolder {
     }
 }
 
-interface StateHolder {
-    fun <T> LiveData<T>.post(v: T) = (this as MutableLiveData).postValue(v)
-    fun <T> LiveData<T>.set(v: T) = (this as MutableLiveData).setValue(v)
-    fun <T> asLiveData(v: T): LiveData<T> = MutableLiveData(v)
-    fun <T> asLiveData(): LiveData<T> = MutableLiveData()
+val appScope = CoroutineScope(SupervisorJob() + DSP_IO)
+val onError2 = { e: Exception -> BaseVm.err.emit2(e) }
 
-    fun <T> StateFlow<T>.emit(value: T) {
+inline fun CoroutineScope.launchInLoading(
+    loadingInfo: LoadingInfo? = BaseAct.actBehavior.loadingInfo,
+    noinline onError: (Exception) -> Unit = onError2,
+    crossinline block: suspend CoroutineScope.() -> Unit,
+) = launch(DSP_IO) {
+    try {
+        if (loadingInfo != null) BaseVm.loading.emit(loadingInfo)
+        block()
+    } catch (e: Exception) {
+        this.ensureActive()
+        onError(e)
+    } finally {
+        if (loadingInfo != null) BaseVm.loading.emit(null)
+    }
+}
+
+interface StateHolder {
+//    fun <T> LiveData<T>.post(v: T) = (this as MutableLiveData).postValue(v)
+//    fun <T> LiveData<T>.set(v: T) = (this as MutableLiveData).setValue(v)
+//    fun <T> asLiveData(v: T): LiveData<T> = MutableLiveData(v)
+//    fun <T> asLiveData(): LiveData<T> = MutableLiveData()
+
+    val scope: CoroutineScope get() = appScope
+
+    fun <T> SharedFlow<T>.emit2(value: T) {
+        this as MutableSharedFlow
+        if (!tryEmit(value)) scope.launch { emit(value) }
+    }
+
+    fun <T> StateFlow<T>.emit2(value: T) {
         (this as MutableStateFlow).tryEmit(value)
     }
 
-    fun <T> asStateFlow(value: T): StateFlow<T> = MutableStateFlow(value)
+    fun <T> asStateFlow(value: T): MutableStateFlow<T> = MutableStateFlow(value)
 
     // sharedFlow参数详解 https://itnext.io/mutablesharedflow-is-kind-of-complicated-61af68011eae
     /** 将[SharedFlow]配置为一个事件流，默认没有粘性事件，且存在收集者时，每个事件都被处理，不丢弃事件
@@ -96,8 +101,8 @@ interface StateHolder {
     fun <T> asEventFlow(
         replay: Int = 0,
         extraBufferCapacity: Int = 0,
-        onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND
-    ): SharedFlow<T> = MutableSharedFlow(replay, extraBufferCapacity, onBufferOverflow)
+        onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND,
+    ): MutableSharedFlow<T> = MutableSharedFlow(replay, extraBufferCapacity, onBufferOverflow)
 
     /** 创建一个可在多个页面观察的事件流。当多个页面使用[launchWhenStarted]收集事件流时，
      * 使用[BufferOverflow.SUSPEND]，缓冲区溢出后，需要等待所有收集者都处理完事件 才会发出下一个事件，
@@ -107,7 +112,7 @@ interface StateHolder {
      * @param onlyLastEvent 收集者从挂起恢复后，是否只接收处理最后一次事件 */
     fun <T> asEventFlowMultiPage(
         onlyLastEvent: Boolean,
-    ): SharedFlow<T> = MutableSharedFlow(
+    ): MutableSharedFlow<T> = MutableSharedFlow(
         0, if (onlyLastEvent) 1 else 500, BufferOverflow.DROP_OLDEST
     )
 }

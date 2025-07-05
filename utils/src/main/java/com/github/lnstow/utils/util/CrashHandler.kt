@@ -9,6 +9,7 @@ import com.github.lnstow.utils.ext.fileDir
 import com.github.lnstow.utils.ext.logSt
 import com.github.lnstow.utils.ext.showDialog
 import com.github.lnstow.utils.ui.BaseAct
+import java.io.EOFException
 import java.io.File
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -46,4 +47,4 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
 
 fun Throwable.isNetworkError() =
     this is SocketTimeoutException || this is UnknownHostException || this is ConnectException
-            || this is UnresolvedAddressException
+            || this is UnresolvedAddressException || this is EOFException

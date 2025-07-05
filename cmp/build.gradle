@@ -13,7 +13,7 @@ android {
     compileSdk 35
 
     defaultConfig {
-        minSdk 28
+        minSdk 24
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -57,20 +57,9 @@ afterEvaluate {
 }
 
 dependencies {
-
-    implementation libs.androidx.core.ktx
-//    implementation libs.androidx.appcompat
-//    implementation libs.material
-
-    api libs.androidx.lifecycle.runtime.ktx
-    api libs.androidx.activity.compose
     api platform(libs.androidx.compose.bom)
-    api libs.androidx.ui
-    api libs.androidx.ui.graphics
-    api libs.androidx.ui.tooling.preview
-    api libs.androidx.material3
+    api libs.bundles.common.cmp
 //    api 'androidx.compose.foundation:foundation'
-//    api libs.androidx.material3.adaptive.navigation.suite
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
@@ -80,7 +69,6 @@ dependencies {
     debugApi libs.androidx.ui.tooling
 //    debugImplementation libs.androidx.ui.test.manifest
 
-    api 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1'
-//    implementation 'com.google.code.gson:gson:2.11.0'
+    api libs.ksjson
 
 }

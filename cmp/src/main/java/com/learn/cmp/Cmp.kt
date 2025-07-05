@@ -18,7 +18,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNames
+import kotlinx.serialization.json.JsonPrimitive
 
 @Composable
 fun LnstowCmpTest() {
@@ -33,18 +35,19 @@ fun TestJson() {
     var resStr by remember { mutableStateOf("json result") }
 
     Column {
-//        Spacer(Modifier.height(8.dp))
-//        Text(
-//            text = "gson to json no keep", Modifier.clickable {
-//                kotlin.runCatching {
-//                    val obj = jsStr.fromJson<AAANoKeep>()
-//                    obj.ksk2 = -321
-//                    resStr = obj.toJson()
-//                }.onFailure {
-//                    resStr = it.message ?: "json error1"
-//                }
-//            }
-//        )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = "gson to json no keep", Modifier.clickable {
+                kotlin.runCatching {
+                    val obj = jsStr.ksFromJson<MutableMap<String, JsonElement?>>()
+                    obj["ksk2"]= JsonPrimitive(-321)
+                    obj["testD"] = JsonPrimitive("1")
+                    resStr = obj.ksToJson()
+                }.onFailure {
+                    resStr = it.message ?: "json error1"
+                }
+            }
+        )
 //        Spacer(Modifier.height(8.dp))
 //        Text(
 //            text = "gson to json keep", Modifier.clickable {

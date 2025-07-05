@@ -10,12 +10,12 @@ import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.lnstow.utils.ext.Dp
 import com.github.lnstow.utils.ext.MATCH
 import com.github.lnstow.utils.ext.VGLP
 import com.github.lnstow.utils.ext.WRAP
 import com.github.lnstow.utils.ext.toPx
+import dev.androidbroadcast.vbpd.viewBinding
 
 typealias ClickEv = (View) -> Unit
 typealias ClickEv2 = () -> Unit
@@ -48,7 +48,7 @@ abstract class PageBlockFragment : BaseFrag() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
 //        return super.onCreateView(inflater, container, savedInstanceState)
         return PageBlockContainerLayout(inflater.context)
@@ -75,7 +75,7 @@ abstract class ViewBindingFragment(@LayoutRes private val layoutId: Int) : BaseF
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         if (tb == null || layoutId == 0)
             return super.onCreateView(inflater, container, savedInstanceState)

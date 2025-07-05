@@ -4,9 +4,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.SystemClock
 import android.webkit.MimeTypeMap
 import android.widget.ImageView
 import androidx.annotation.Keep
+import androidx.collection.lruCache
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.github.lnstow.utils.ui.BaseAct
@@ -15,6 +17,7 @@ import com.google.gson.reflect.TypeToken
 import java.io.File
 import java.io.InputStream
 import java.io.Reader
+import java.net.SocketTimeoutException
 import java.util.Collections
 
 inline fun <K, V> MutableMap<K, V>.update(key: K, newValue: V.() -> V) {
@@ -37,7 +40,7 @@ fun <T> MutableList<T>.swap(pos1: Int, pos2: Int) = apply {
 /** 返回from到to子列表，不是复制一个新列表，包含from，排除to */
 fun <T> List<T>.subList(from: Int = 0, to: Int = size) = subList(from, to)
 
-val gson by lazy { Gson() }
+var gson = Gson()
 fun Any?.toJson(): String = gson.toJson(this)
 inline fun <reified T> String.fromJson(): T =
     gson.fromJson(this, object : TypeToken<T>() {}.type)
@@ -98,7 +101,7 @@ interface IApiResp<T> {
 }
 
 inline fun Throwable.matchCode(
-    vararg code: Any, block: (resp: IApiResp<*>) -> Unit
+    vararg code: Any, block: (resp: IApiResp<*>) -> Unit,
 ) = if (this is ApiError && resp.code in code) block(this.resp) else null
 
 class ApiError(val resp: IApiResp<*>) : Exception(resp.msgNonNull())
@@ -147,4 +150,28 @@ fun Bitmap.compressToFile(file: File) {
 fun String.takeEllipsis(maxLen: Int): String {
     if (length > maxLen) return take(maxLen) + "..."
     return this
+}
+
+suspend fun <T> retry(times: Int = 3, block: suspend () -> T): T {
+    var count = 0
+    while (count++ < times) {
+        try {
+            return block()
+        } catch (_: Exception) {
+        }
+    }
+    throw SocketTimeoutException()
+}
+
+private class DebouncedHold(var lastTime: Long = 0)
+
+private val debouncedMap by lazy { lruCache<Int, DebouncedHold>(7, create = { DebouncedHold() }) }
+
+fun debounced(onClick: () -> Unit) {
+    val hold = debouncedMap[onClick::class.hashCode()]!!
+    val now = SystemClock.uptimeMillis()
+    if (now - hold.lastTime > 1500L) {
+        onClick()
+        hold.lastTime = now
+    }
 }
