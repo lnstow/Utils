@@ -10,5 +10,20 @@
         <item name="backgroundTint">@android:color/transparent</item>
     </style>
 
+    <style name="EdgeToEdgeBottomSheetDialog" parent="Theme.Material3.DayNight.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/EdgeToEdgeBottomSheetStyle</item>
 
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="enableEdgeToEdge">true</item>
+        <item name="paddingBottomSystemWindowInsets">false</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+    </style>
+
+    <style name="EdgeToEdgeBottomSheetStyle" parent="Widget.Material3.BottomSheet.Modal">
+        <!-- 关键：确保导航栏背景是透明的 -->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="enableEdgeToEdge">true</item>
+        <item name="paddingBottomSystemWindowInsets">false</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+    </style>
 </resources>

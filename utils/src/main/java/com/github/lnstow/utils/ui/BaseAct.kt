@@ -69,7 +69,7 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
     }
 
     open fun onShowToast(toast: ToastInfo) {
-        lifecycleScope.launchWhenResumed { toast.showToast(this@BaseAct) }
+        lifecycleScope.launchWhenStarted { toast.showToast(this@BaseAct) }
     }
 
     open fun setEdgeToEdge() {
@@ -153,7 +153,7 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
         val setEdgeToEdge: (BaseAct) -> Unit = {
             it.enableEdgeToEdge()
             it.window.wi.lightBars()
-            it.window.decorView.addWindowInsetsPadding()
+            it.window.decorView.addWindowInsetsPadding(consumed = false)
         },
         val loadingInfo: LoadingInfo? = LoadingDef("Loading..."),
         val onCatchApiError: (BaseAct, ApiError) -> Unit = { act, err ->

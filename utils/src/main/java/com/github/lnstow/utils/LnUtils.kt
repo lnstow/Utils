@@ -9,6 +9,7 @@ import com.github.lnstow.utils.ext.Dp
 import com.github.lnstow.utils.ext.debug
 import com.github.lnstow.utils.ext.myApp
 import com.github.lnstow.utils.ui.BaseAct
+import com.github.lnstow.utils.ui.BaseBottomDialog
 import com.github.lnstow.utils.ui.NavigateManager
 import com.github.lnstow.utils.util.CrashHandler
 
@@ -22,6 +23,7 @@ object LnUtils {
         isDebug: Boolean,
         resId: ResId,
         behavior: BaseAct.ActBehavior,
+        dialogBehavior: BaseBottomDialog.BottomDialogBehavior,
         nav: NavigateManager,
         tbConfig: TbConfig,
     ) {
@@ -30,6 +32,7 @@ object LnUtils {
         if (isDebug) Thread.setDefaultUncaughtExceptionHandler(CrashHandler)
         this.resId = resId
         BaseAct.actBehavior = behavior
+        BaseBottomDialog.dialogBehavior = dialogBehavior
         this.nav = nav
         this.tbConfig = tbConfig
     }
@@ -48,6 +51,6 @@ object LnUtils {
         @DimenRes val textSize: Int,
         @DimenRes val titleSize: Int,
         @DrawableRes val backIcon: Int,
-        @Dp val heightDp: Int
+        @Dp val heightDp: Int,
     )
 }

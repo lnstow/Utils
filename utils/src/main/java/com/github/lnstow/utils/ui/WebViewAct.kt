@@ -29,7 +29,7 @@ abstract class WebLpAbs(
     }
 }
 
-class WebViewAct : FragWrapperActivity() {
+open class WebViewAct : FragWrapperActivity() {
     override fun initFrag(): Fragment {
         val lp = getLp<WebLpAbs>()
         return newFrag(lp.newInstance(), lp)

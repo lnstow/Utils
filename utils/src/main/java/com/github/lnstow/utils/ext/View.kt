@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import android.text.Editable
@@ -103,7 +104,7 @@ private class MultiTouchDelegate(rect: Rect, view: View) : TouchDelegate(rect, v
 @MainThread
 private fun View.startVibrate(
     @IntRange(from = 1) milliseconds: Long = 100,
-    @IntRange(from = 1, to = 255) amplitude: Int? = null
+    @IntRange(from = 1, to = 255) amplitude: Int? = null,
 ) {
 //    if (!CommonModule.vibrateEffect) return
 //    performHapticFeedback(
@@ -116,13 +117,12 @@ private fun View.startVibrate(
     } else context.getSystemService(Service.VIBRATOR_SERVICE) as Vibrator
 
     if (!vibrator.hasVibrator()) return
-    TODO("清单文件添加震动权限")
-//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) vibrator.vibrate(
-//        VibrationEffect.createOneShot(
-//            milliseconds.coerceAtLeast(50),
-//            amplitude ?: VibrationEffect.DEFAULT_AMPLITUDE
-//        )
-//    ) else vibrator.vibrate(milliseconds)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) vibrator.vibrate(
+        VibrationEffect.createOneShot(
+            milliseconds.coerceAtLeast(50),
+            amplitude ?: VibrationEffect.DEFAULT_AMPLITUDE
+        )
+    ) else vibrator.vibrate(milliseconds)
 }
 
 fun View.startVibrateLv1() = startVibrate(10, 10)
@@ -191,7 +191,7 @@ fun EditText.setTextAndSel(text: CharSequence) {
 
 inline fun <T : EditText> T.showSoftInput(
     delay: Long = 150,
-    crossinline block: T.() -> Unit = {}
+    crossinline block: T.() -> Unit = {},
 ) = postDelayed(delay) {
     requestFocus()
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -201,7 +201,7 @@ inline fun <T : EditText> T.showSoftInput(
 
 inline fun <T : EditText> T.hideSoftInput(
     delay: Long = 150,
-    crossinline block: T.() -> Unit = {}
+    crossinline block: T.() -> Unit = {},
 ) = postDelayed(delay) {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(this.windowToken, 0)
@@ -295,7 +295,7 @@ inline fun bindTextAndBtnStyle(
             else if (btnUseMain) resId.main
             else resId.ftAcc
         )
-    }
+    },
 ) = et.doAfterTextChanged {
     val empty = it.isNullOrEmpty() || etIsEmpty(it)
     btn.btnStyle(empty)
@@ -313,7 +313,7 @@ inline fun <T> bindCheckAndBtnStyle(
             else if (btnUseMain) resId.main
             else resId.ftAcc
         )
-    }
+    },
 ) where T : Checkable, T : View {
     val isDisable = cb.any { !it.isChecked || disable(it) }
     btn.btnStyle(isDisable)
@@ -356,13 +356,13 @@ fun LinearLayout.addSpace(@Dp dp: Int, horizontal: Boolean = true) =
 
 inline fun <VG : ViewGroup, T : View> T.attachTo(
     vg: VG,
-    doAddView: VG.(View) -> Unit = { addView(it) }
+    doAddView: VG.(View) -> Unit = { addView(it) },
 ): T = this.also { vg.doAddView(it) }
 
 inline fun <VG : ViewGroup, T : View> T.attachTo(
     vg: VG,
     @Dp height: Int,
-    @Dp width: Int? = null
+    @Dp width: Int? = null,
 ): T = this.also { vg.addView(it, width?.toPx() ?: MATCH, height.toPx()) }
 
 fun View.setPaddingHorizontal(@Dp paddingDp: Int) {
@@ -392,7 +392,7 @@ fun Fragment.getDrawableById(@DrawableRes id: Int) = ContextCompat.getDrawable(r
 fun Context.getHighlightMsg(
     @StringRes startStr: Int,
     highlightStr: String,
-    @StringRes endStr: Int
+    @StringRes endStr: Int,
 ) = buildSpannedString {
     append(getString(startStr))
     append(
@@ -432,8 +432,9 @@ open class RVH2<T : View>(val view: T) : RecyclerView.ViewHolder(view)
 open class VbVh<T : ViewBinding>(val vb: T) : RecyclerView.ViewHolder(vb.root) {
     constructor(
         create: (
-            inflater: LayoutInflater, parent: ViewGroup, attach: Boolean
-        ) -> T, vg: ViewGroup
+            inflater: LayoutInflater, parent: ViewGroup, attach: Boolean,
+        ) -> T,
+        vg: ViewGroup,
     ) : this(create(LayoutInflater.from(vg.context), vg, false))
 }
 
