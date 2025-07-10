@@ -189,7 +189,7 @@ fun EditText.setTextAndSel(text: CharSequence) {
     setSelection(this.text.length)
 }
 
-inline fun <T : EditText> T.showSoftInput(
+inline fun <T : View> T.showSoftInput(
     delay: Long = 150,
     crossinline block: T.() -> Unit = {},
 ) = postDelayed(delay) {
@@ -199,7 +199,7 @@ inline fun <T : EditText> T.showSoftInput(
     block(this)
 }
 
-inline fun <T : EditText> T.hideSoftInput(
+inline fun <T : View> T.hideSoftInput(
     delay: Long = 150,
     crossinline block: T.() -> Unit = {},
 ) = postDelayed(delay) {
@@ -286,18 +286,18 @@ fun sharedElementBundle(ctx: Context, vararg views: View) =
  * */
 inline fun bindTextAndBtnStyle(
     et: EditText,
-    btn: TextView,
+    btn: View,
     btnUseMain: Boolean = true,
     crossinline etIsEmpty: (Editable) -> Boolean = { false },
-    crossinline btnStyle: TextView.(disable: Boolean) -> Unit = {
-        ftColor(
+    crossinline btnStyle: View.(disable: Boolean) -> Unit = {
+        if (this is TextView) ftColor(
             if (it) resId.ft
             else if (btnUseMain) resId.main
             else resId.ftAcc
         )
     },
 ) = et.doAfterTextChanged {
-    val empty = it.isNullOrEmpty() || etIsEmpty(it)
+    val empty = it.isNullOrBlank() || etIsEmpty(it)
     btn.btnStyle(empty)
     btn.isClickable = !empty
 }
@@ -353,6 +353,10 @@ fun LinearLayout.addSpace(@Dp dp: Int, horizontal: Boolean = true) =
     addView(::Space) {
         layoutParams = if (horizontal) LLLP(MATCH, dp.toPx()) else LLLP(dp.toPx(), MATCH)
     }
+
+fun LinearLayout.addSpace() = addView(::Space) {
+    layoutParams = LLLP(0, 0).apply { weight = 1f }
+}
 
 inline fun <VG : ViewGroup, T : View> T.attachTo(
     vg: VG,
@@ -450,3 +454,6 @@ fun RecyclerView.setOnClick(block: ClickEv) {
         gestureDetector.onTouchEvent(event)
     }
 }
+
+val View.parentView: ViewGroup? get() = this.parent as? ViewGroup
+fun View.removeFromParent() = parentView?.removeView(this)

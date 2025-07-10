@@ -7,6 +7,7 @@ import androidx.annotation.AnimatorRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager
+import com.github.lnstow.utils.LnUtils
 import com.github.lnstow.utils.R
 
 interface HasFragContainer {
@@ -40,15 +41,14 @@ abstract class FragWrapperActivity : BaseAct(), HasFragContainer {
     final override fun initView() {}
 }
 
-@Suppress("FunctionNaming")
 fun FragmentManager.addFragWithAnimInOut(
     frag: Fragment,
     containerId: Int,
     isAddStack: Boolean = true,
-    @AnimatorRes @AnimRes topEnter: Int = R.anim.frag_slide_in_right,
-    @AnimatorRes @AnimRes bottomExit: Int = R.anim.frag_fade_out,
-    @AnimatorRes @AnimRes bottomEnter: Int = R.anim.frag_fade_in,
-    @AnimatorRes @AnimRes topExit: Int = R.anim.frag_slide_out_right,
+    @AnimatorRes @AnimRes topEnter: Int = LnUtils.pageAnim.topEnter,
+    @AnimatorRes @AnimRes bottomExit: Int = LnUtils.pageAnim.bottomExit,
+    @AnimatorRes @AnimRes bottomEnter: Int = LnUtils.pageAnim.bottomEnter,
+    @AnimatorRes @AnimRes topExit: Int = LnUtils.pageAnim.topExit,
 ) {
     val tr = beginTransaction()
     val f = fragments.lastOrNull()
@@ -58,3 +58,18 @@ fun FragmentManager.addFragWithAnimInOut(
     if (isAddStack && f != null) tr.addToBackStack(null)
     tr.commitAllowingStateLoss()
 }
+
+fun FragmentManager.replaceFragWithAnimInOut(
+    frag: Fragment,
+    containerId: Int,
+    @AnimatorRes @AnimRes topEnter: Int = LnUtils.pageAnim.topEnter,
+    @AnimatorRes @AnimRes bottomExit: Int = LnUtils.pageAnim.bottomExit,
+    @AnimatorRes @AnimRes bottomEnter: Int = LnUtils.pageAnim.bottomEnter,
+    @AnimatorRes @AnimRes topExit: Int = LnUtils.pageAnim.topExit,
+) {
+    val tr = beginTransaction()
+    tr.setCustomAnimations(topEnter, bottomExit, bottomEnter, topExit)
+    tr.replace(containerId, frag, frag.hashCode().toString())
+    tr.commitAllowingStateLoss()
+}
+

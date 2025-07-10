@@ -1,6 +1,8 @@
 package com.github.lnstow.utils
 
 import android.app.Application
+import androidx.annotation.AnimRes
+import androidx.annotation.AnimatorRes
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
@@ -14,9 +16,10 @@ import com.github.lnstow.utils.ui.NavigateManager
 import com.github.lnstow.utils.util.CrashHandler
 
 object LnUtils {
-    lateinit var resId: ResId
-    lateinit var nav: NavigateManager
-    lateinit var tbConfig: TbConfig
+    lateinit var resId: ResId private set
+    lateinit var nav: NavigateManager private set
+    lateinit var tbConfig: TbConfig private set
+    lateinit var pageAnim: PageAnim private set
 
     fun init(
         app: Application,
@@ -26,6 +29,7 @@ object LnUtils {
         dialogBehavior: BaseBottomDialog.BottomDialogBehavior,
         nav: NavigateManager,
         tbConfig: TbConfig,
+        pageAnim: PageAnim,
     ) {
         myApp = app
         debug = isDebug
@@ -35,6 +39,7 @@ object LnUtils {
         BaseBottomDialog.dialogBehavior = dialogBehavior
         this.nav = nav
         this.tbConfig = tbConfig
+        this.pageAnim = pageAnim
     }
 
     class ResId(
@@ -52,5 +57,12 @@ object LnUtils {
         @DimenRes val titleSize: Int,
         @DrawableRes val backIcon: Int,
         @Dp val heightDp: Int,
+    )
+
+    class PageAnim(
+        @AnimatorRes @AnimRes val topEnter: Int = R.anim.frag_slide_in_right,
+        @AnimatorRes @AnimRes val bottomExit: Int = R.anim.frag_fade_out,
+        @AnimatorRes @AnimRes val bottomEnter: Int = R.anim.frag_fade_in,
+        @AnimatorRes @AnimRes val topExit: Int = R.anim.frag_slide_out_right,
     )
 }
