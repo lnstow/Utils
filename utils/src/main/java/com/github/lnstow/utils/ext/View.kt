@@ -47,12 +47,16 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import androidx.viewpager2.widget.CompositePageTransformer
+import androidx.viewpager2.widget.MarginPageTransformer
+import androidx.viewpager2.widget.ViewPager2
 import com.github.lnstow.utils.LnUtils.resId
 import com.github.lnstow.utils.ui.BaseAct
 import com.github.lnstow.utils.ui.ClickEv
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.internal.bind.util.ISO8601Utils
 import java.util.Date
+import kotlin.math.abs
 
 fun View.expandTouchArea(size: Int) {
     expandTouchArea(Rect(size, size, size, size))
@@ -373,6 +377,10 @@ fun View.setPaddingHorizontal(@Dp paddingDp: Int) {
     setPadding(paddingDp.toPx(), paddingTop, paddingDp.toPx(), paddingBottom)
 }
 
+fun View.setPaddingDp(@Dp horizontalDp: Int, @Dp verticalDp: Int) {
+    setPadding(horizontalDp.toPx(), verticalDp.toPx(), horizontalDp.toPx(), verticalDp.toPx())
+}
+
 val View.globalRect: Rect
     get() {
         val rect = Rect()
@@ -457,3 +465,30 @@ fun RecyclerView.setOnClick(block: ClickEv) {
 
 val View.parentView: ViewGroup? get() = this.parent as? ViewGroup
 fun View.removeFromParent() = parentView?.removeView(this)
+
+val ViewPager2.rv get() = getChildAt(0) as RecyclerView
+fun ViewPager2.addCarouselEffect(
+    @Dp eachItemSpace: Int,
+    @Dp nextItemWidth: Int,
+    nextItemScaleY: Float = 0.8f,
+) {
+    var par: ViewGroup? = this
+    while (par != null && par !== rootView) {
+        par.clipChildren = false    // No clipping the left and right items
+        par.clipToPadding = false   // Show in full width without clipping the padding
+        par = par.parentView
+    }
+
+    offscreenPageLimit = 5  // Render the left and right items
+    setPaddingHorizontal(eachItemSpace + nextItemWidth)
+    rv.overScrollMode = RecyclerView.OVER_SCROLL_NEVER // Remove the scroll effect
+
+    val compositePageTransformer = CompositePageTransformer()
+    compositePageTransformer.addTransformer(MarginPageTransformer(eachItemSpace.toPx()))
+
+    compositePageTransformer.addTransformer { page, position ->
+        val r = 1 - abs(position)
+        page.scaleY = nextItemScaleY + r * (1 - nextItemScaleY)
+    }
+    setPageTransformer(compositePageTransformer)
+}

@@ -17,7 +17,6 @@ import com.google.gson.reflect.TypeToken
 import java.io.File
 import java.io.InputStream
 import java.io.Reader
-import java.net.SocketTimeoutException
 import java.util.Collections
 
 inline fun <K, V> MutableMap<K, V>.update(key: K, newValue: V.() -> V) {
@@ -154,13 +153,15 @@ fun String.takeEllipsis(maxLen: Int): String {
 
 suspend fun <T> retry(times: Int = 3, block: suspend () -> T): T {
     var count = 0
+    var lastException: Exception? = null
     while (count++ < times) {
         try {
             return block()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            lastException = e
         }
     }
-    throw SocketTimeoutException()
+    throw lastException!!
 }
 
 private class DebouncedHold(var lastTime: Long = 0)

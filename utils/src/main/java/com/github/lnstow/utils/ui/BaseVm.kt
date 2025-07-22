@@ -58,7 +58,7 @@ abstract class BaseVm : ViewModel(), StateHolder {
 }
 
 val appScope = CoroutineScope(SupervisorJob() + DSP_IO)
-val onError2 = { e: Exception -> BaseVm.err.emit2(e) }
+val onError2 = { e: Throwable -> BaseVm.err.emit2(e) }
 
 inline fun CoroutineScope.launchInLoading(
     loadingInfo: LoadingInfo? = BaseAct.actBehavior.loadingInfo,
