@@ -11,9 +11,9 @@ import androidx.core.view.WindowInsetsControllerCompat
 //  https://blog.csdn.net/StjunF/article/details/121840122
 //  https://juejin.cn/post/7395866692772085800#heading-4
 fun View.addWindowInsetsPadding(
-    consumed: Boolean = true,
+    consumed: Boolean = false,
     @InsetsType barType: Int = WIB.systemBars(),
-    doOnWindowChange: ((bars: androidx.core.graphics.Insets) -> Unit)? = null
+    doOnWindowChange: ((bars: androidx.core.graphics.Insets) -> Unit)? = null,
 ) {
     ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
         val bars = insets.getInsets(
@@ -42,7 +42,7 @@ fun WI.hideSystemBars(@InsetsType barType: Int = WIB.systemBars()) {
 
 fun WI.lightBars(
     isLight: Boolean = AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES,
-    @InsetsType barType: Int = WIB.systemBars()
+    @InsetsType barType: Int = WIB.systemBars(),
 ) {
     if (barType and WIB.statusBars() != 0) isAppearanceLightStatusBars = isLight
     if (barType and WIB.navigationBars() != 0) isAppearanceLightNavigationBars = isLight

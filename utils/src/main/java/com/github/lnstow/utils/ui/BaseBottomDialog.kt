@@ -12,6 +12,7 @@ import androidx.annotation.LayoutRes
 import androidx.core.graphics.Insets
 import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import com.github.lnstow.utils.R
 import com.github.lnstow.utils.ext.AccessAct
 import com.github.lnstow.utils.ext.AccessCtx
@@ -26,6 +27,7 @@ import com.github.lnstow.utils.ext.wi
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.coroutines.CoroutineScope
 
 abstract class BaseBottomDialog(
     @LayoutRes layoutId: Int = 0,
@@ -34,6 +36,7 @@ abstract class BaseBottomDialog(
     override fun ctx(): Context = requireContext()
     override fun act(): FragmentActivity = requireActivity()
     override val hd: PageEventHandler by lazy { FragmentPageEventHandler(this) }
+    protected val scope: CoroutineScope get() = viewLifecycleOwner.lifecycleScope
 
     protected open val draggable = true
     var dismissListener: () -> Unit = {}

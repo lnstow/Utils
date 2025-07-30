@@ -20,6 +20,7 @@ import com.github.lnstow.utils.ext.lightBars
 import com.github.lnstow.utils.ext.showDialog
 import com.github.lnstow.utils.ext.wi
 import com.github.lnstow.utils.util.CrashHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.SharedFlow
@@ -31,6 +32,7 @@ abstract class BaseAct(@LayoutRes layoutId: Int = 0) : AppCompatActivity(layoutI
     override fun ctx(): Context = this
     override fun act(): FragmentActivity = this
     override val hd: PageEventHandler by lazy { ActivityPageEventHandler(this) }
+    protected val scope: CoroutineScope get() = lifecycleScope
 
     override fun onCreate(savedInstanceState: Bundle?) {
         actList.add(this)

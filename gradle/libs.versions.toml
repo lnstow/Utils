@@ -61,6 +61,10 @@ ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 splashscreen = { module = "androidx.core:core-splashscreen", version = "1.2.0-rc01" }
 imagecropper = { module = "com.vanniktech:android-image-cropper", version = "4.6.0" }
+spannable = { module = "com.github.liangjingkanji:spannable", version = "1.2.7" }
+blurview = { module = "com.github.Dimezis:BlurView", version = "version-3.1.0" }
+bannerview = { module = "com.github.zhpanvip:bannerviewpager", version = "3.5.13" }
+wheelview = { module = "com.github.gzu-liyujiang.AndroidPicker:WheelView", version = "4.1.14" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

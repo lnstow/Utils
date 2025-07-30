@@ -470,10 +470,11 @@ val ViewPager2.rv get() = getChildAt(0) as RecyclerView
 fun ViewPager2.addCarouselEffect(
     @Dp eachItemSpace: Int,
     @Dp nextItemWidth: Int,
+    endView: View? = this.parentView?.parentView,
     nextItemScaleY: Float = 0.8f,
 ) {
     var par: ViewGroup? = this
-    while (par != null && par !== rootView) {
+    while (par != null && par !== rootView && par !== endView) {
         par.clipChildren = false    // No clipping the left and right items
         par.clipToPadding = false   // Show in full width without clipping the padding
         par = par.parentView
@@ -491,4 +492,15 @@ fun ViewPager2.addCarouselEffect(
         page.scaleY = nextItemScaleY + r * (1 - nextItemScaleY)
     }
     setPageTransformer(compositePageTransformer)
+}
+
+fun View.getRectInWindow(): Rect {
+    val location = IntArray(2)
+    this.getLocationInWindow(location)
+    return Rect(
+        location[0],
+        location[1],
+        location[0] + this.width,
+        location[1] + this.height
+    )
 }
