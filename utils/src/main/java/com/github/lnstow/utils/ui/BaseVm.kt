@@ -45,7 +45,7 @@ abstract class BaseVm : ViewModel(), StateHolder {
         flow: Flow<T>,
         dsp: CoroutineDispatcher = Dispatchers.Default,
         block: suspend (T) -> Unit,
-    ) = viewModelScope.launch(dsp) { flow.collect { block(it) } }
+    ) = viewModelScope.launch(dsp) { flow.collect(block) }
 
     companion object : StateHolder, PageEvent {
         val loading = asStateFlow<LoadingInfo?>(null)

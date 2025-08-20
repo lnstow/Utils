@@ -154,6 +154,9 @@ fun <T : TextView> T.gravityCenterHorizontal() = apply { gravity = Gravity.CENTE
 fun Int.toPx(): Int = ((this * density) + 0.5F).toInt()
 fun Int.toDp(): Int = ((this / density) + 0.5F).toInt()
 
+fun Float.toPx(): Int = ((this * density) + 0.5F).toInt()
+fun Float.toDp(): Int = ((this / density) + 0.5F).toInt()
+
 fun Long.toDate(): Date = Date(this)
 fun Long.toISO8601(): String = ISO8601Utils.format(Date(this), true)
 private val density get() = myApp.resources.displayMetrics.density
@@ -343,11 +346,11 @@ enum class BtnStyle(@ColorRes val bgColorId: Int, @ColorRes val ftColorId: Int) 
 }
 
 
-fun LinearLayout.addDivider(horizontal: Boolean = true, @Dp marginDp: Int = 0) =
+fun LinearLayout.addDivider(horizontal: Boolean = true, @Dp marginDp: Int = 0, size: Float = 1f) =
     addView(::View) {
-        layoutParams = if (horizontal) LLLP(MATCH, 1.toPx()).apply {
+        layoutParams = if (horizontal) LLLP(MATCH, size.toPx()).apply {
             setMargins(marginDp.toPx(), 0, marginDp.toPx(), 0)
-        } else LLLP(1.toPx(), MATCH).apply {
+        } else LLLP(size.toPx(), MATCH).apply {
             setMargins(0, marginDp.toPx(), 0, marginDp.toPx())
         }
         bgColor(resId.divider)
@@ -473,6 +476,10 @@ fun ViewPager2.addCarouselEffect(
     endView: View? = this.parentView,
     nextItemScaleY: Float = 0.8f,
 ) {
+    rv.apply {
+        clipChildren = false
+        clipToPadding = false
+    }
     var par: ViewGroup? = this
     while (par != null && par !== rootView && par !== endView?.parentView) {
         par.clipChildren = false    // No clipping the left and right items

@@ -7,13 +7,15 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.github.lnstow.utils.LnUtils
 import com.github.lnstow.utils.ui.BaseAct
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 inline fun Context.showDialog(
+    themeId: Int = LnUtils.resId.showDialogTheme,
     setDialogListener: AlertDialog.() -> Unit = {},
-    block: MaterialAlertDialogBuilder.() -> Unit
-): AlertDialog = MaterialAlertDialogBuilder(this).run {
+    block: MaterialAlertDialogBuilder.() -> Unit,
+): AlertDialog = MaterialAlertDialogBuilder(this, themeId).run {
     block()
     val d = create()
     d.setDialogListener()
@@ -22,12 +24,13 @@ inline fun Context.showDialog(
 }
 
 inline fun Fragment.showDialog(
+    themeId: Int = LnUtils.resId.showDialogTheme,
     setDialogListener: AlertDialog.() -> Unit = {},
-    block: MaterialAlertDialogBuilder.() -> Unit
-) = requireContext().showDialog(setDialogListener, block)
+    block: MaterialAlertDialogBuilder.() -> Unit,
+) = requireContext().showDialog(themeId, setDialogListener, block)
 
 private fun AlertDialog.btn(
-    which: Int, text: String, click: (View) -> Unit
+    which: Int, text: String, click: (View) -> Unit,
 ) = getButton(which).apply {
     setText(text)
     setOnClickListener(click)

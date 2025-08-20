@@ -7,6 +7,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.annotation.StyleRes
 import com.github.lnstow.utils.ext.Dp
 import com.github.lnstow.utils.ext.debug
 import com.github.lnstow.utils.ext.myApp
@@ -47,7 +48,8 @@ object LnUtils {
         @ColorRes val divider: Int,
         @ColorRes val ft: Int,
         @ColorRes val ftAcc: Int,
-        @StringRes val copyTextOk: Int = TODO(),
+        @StringRes val copyTextOk: Int = 0,
+        @StyleRes val showDialogTheme: Int = 0,
     )
 
     class TbConfig(
